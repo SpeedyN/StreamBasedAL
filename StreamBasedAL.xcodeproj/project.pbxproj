@@ -1,0 +1,346 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		71C04A131F0E2192008DDE98 /* stream_based_al_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 71C049FD1F0E2192008DDE98 /* stream_based_al_data.cpp */; };
+		71C04A151F0E2192008DDE98 /* stream_based_al_experimenter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 71C04A001F0E2192008DDE98 /* stream_based_al_experimenter.cpp */; };
+		71C04A171F0E2192008DDE98 /* stream_based_al_forest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 71C04A031F0E2192008DDE98 /* stream_based_al_forest.cpp */; };
+		71C04A191F0E2193008DDE98 /* stream_based_al_hyperparameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 71C04A061F0E2192008DDE98 /* stream_based_al_hyperparameters.cpp */; };
+		71C04A1B1F0E2193008DDE98 /* stream_based_al_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 71C04A091F0E2192008DDE98 /* stream_based_al_main.cpp */; };
+		71C04A1D1F0E2193008DDE98 /* stream_based_al_random.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 71C04A0B1F0E2192008DDE98 /* stream_based_al_random.cpp */; };
+		71C04A1F1F0E2193008DDE98 /* stream_based_al_utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 71C04A0E1F0E2192008DDE98 /* stream_based_al_utilities.cpp */; };
+		71C04A231F0E2622008DDE98 /* libarmadillo.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 71C04A221F0E2622008DDE98 /* libarmadillo.dylib */; };
+		71C04A891F0E26F3008DDE98 /* libboost_serialization.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 71C04A501F0E26F3008DDE98 /* libboost_serialization.dylib */; };
+		71C04A981F0E3585008DDE98 /* libconfig++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 71C04A241F0E263E008DDE98 /* libconfig++.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		71FD7E8E1F0A66ED000E352F /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		71C049F41F0E2192008DDE98 /* stream_based_al.conf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = stream_based_al.conf; sourceTree = "<group>"; };
+		71C049F61F0E2192008DDE98 /* kitti_all_test.data */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = kitti_all_test.data; sourceTree = "<group>"; };
+		71C049F71F0E2192008DDE98 /* kitti_all_test.labels */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = kitti_all_test.labels; sourceTree = "<group>"; };
+		71C049F81F0E2192008DDE98 /* kitti_all_train.data */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = kitti_all_train.data; sourceTree = "<group>"; };
+		71C049F91F0E2192008DDE98 /* kitti_all_train.labels */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = kitti_all_train.labels; sourceTree = "<group>"; };
+		71C049FA1F0E2192008DDE98 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		71C049FB1F0E2192008DDE98 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		71C049FD1F0E2192008DDE98 /* stream_based_al_data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stream_based_al_data.cpp; sourceTree = "<group>"; };
+		71C049FE1F0E2192008DDE98 /* stream_based_al_data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_based_al_data.h; sourceTree = "<group>"; };
+		71C04A001F0E2192008DDE98 /* stream_based_al_experimenter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stream_based_al_experimenter.cpp; sourceTree = "<group>"; };
+		71C04A011F0E2192008DDE98 /* stream_based_al_experimenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_based_al_experimenter.h; sourceTree = "<group>"; };
+		71C04A031F0E2192008DDE98 /* stream_based_al_forest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stream_based_al_forest.cpp; sourceTree = "<group>"; };
+		71C04A041F0E2192008DDE98 /* stream_based_al_forest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_based_al_forest.h; sourceTree = "<group>"; };
+		71C04A061F0E2192008DDE98 /* stream_based_al_hyperparameters.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stream_based_al_hyperparameters.cpp; sourceTree = "<group>"; };
+		71C04A071F0E2192008DDE98 /* stream_based_al_hyperparameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_based_al_hyperparameters.h; sourceTree = "<group>"; };
+		71C04A091F0E2192008DDE98 /* stream_based_al_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stream_based_al_main.cpp; sourceTree = "<group>"; };
+		71C04A0B1F0E2192008DDE98 /* stream_based_al_random.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stream_based_al_random.cpp; sourceTree = "<group>"; };
+		71C04A0C1F0E2192008DDE98 /* stream_based_al_random.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_based_al_random.h; sourceTree = "<group>"; };
+		71C04A0E1F0E2192008DDE98 /* stream_based_al_utilities.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stream_based_al_utilities.cpp; sourceTree = "<group>"; };
+		71C04A0F1F0E2192008DDE98 /* stream_based_al_utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream_based_al_utilities.h; sourceTree = "<group>"; };
+		71C04A221F0E2622008DDE98 /* libarmadillo.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libarmadillo.dylib; path = ../../../../../../../../usr/local/lib/libarmadillo.dylib; sourceTree = "<group>"; };
+		71C04A241F0E263E008DDE98 /* libconfig++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libconfig++.dylib"; path = "../../../../../../../../usr/local/lib/libconfig++.dylib"; sourceTree = "<group>"; };
+		71C04A501F0E26F3008DDE98 /* libboost_serialization.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_serialization.dylib; path = ../../../../../../../../usr/local/lib/libboost_serialization.dylib; sourceTree = "<group>"; };
+		71FD7E901F0A66ED000E352F /* StreamBasedAL */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = StreamBasedAL; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		71FD7E8D1F0A66ED000E352F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				71C04A981F0E3585008DDE98 /* libconfig++.dylib in Frameworks */,
+				71C04A891F0E26F3008DDE98 /* libboost_serialization.dylib in Frameworks */,
+				71C04A231F0E2622008DDE98 /* libarmadillo.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		71C049F31F0E2192008DDE98 /* conf */ = {
+			isa = PBXGroup;
+			children = (
+				71C049F41F0E2192008DDE98 /* stream_based_al.conf */,
+			);
+			path = conf;
+			sourceTree = "<group>";
+		};
+		71C049F51F0E2192008DDE98 /* data */ = {
+			isa = PBXGroup;
+			children = (
+				71C049F61F0E2192008DDE98 /* kitti_all_test.data */,
+				71C049F71F0E2192008DDE98 /* kitti_all_test.labels */,
+				71C049F81F0E2192008DDE98 /* kitti_all_train.data */,
+				71C049F91F0E2192008DDE98 /* kitti_all_train.labels */,
+			);
+			path = data;
+			sourceTree = "<group>";
+		};
+		71C049FC1F0E2192008DDE98 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				71C049FD1F0E2192008DDE98 /* stream_based_al_data.cpp */,
+				71C049FE1F0E2192008DDE98 /* stream_based_al_data.h */,
+				71C04A001F0E2192008DDE98 /* stream_based_al_experimenter.cpp */,
+				71C04A011F0E2192008DDE98 /* stream_based_al_experimenter.h */,
+				71C04A031F0E2192008DDE98 /* stream_based_al_forest.cpp */,
+				71C04A041F0E2192008DDE98 /* stream_based_al_forest.h */,
+				71C04A061F0E2192008DDE98 /* stream_based_al_hyperparameters.cpp */,
+				71C04A071F0E2192008DDE98 /* stream_based_al_hyperparameters.h */,
+				71C04A091F0E2192008DDE98 /* stream_based_al_main.cpp */,
+				71C04A0B1F0E2192008DDE98 /* stream_based_al_random.cpp */,
+				71C04A0C1F0E2192008DDE98 /* stream_based_al_random.h */,
+				71C04A0E1F0E2192008DDE98 /* stream_based_al_utilities.cpp */,
+				71C04A0F1F0E2192008DDE98 /* stream_based_al_utilities.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		71C04A211F0E2622008DDE98 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				71C04A501F0E26F3008DDE98 /* libboost_serialization.dylib */,
+				71C04A241F0E263E008DDE98 /* libconfig++.dylib */,
+				71C04A221F0E2622008DDE98 /* libarmadillo.dylib */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		71FD7E871F0A66ED000E352F = {
+			isa = PBXGroup;
+			children = (
+				71C049F31F0E2192008DDE98 /* conf */,
+				71C049F51F0E2192008DDE98 /* data */,
+				71C049FA1F0E2192008DDE98 /* Makefile */,
+				71C049FB1F0E2192008DDE98 /* README.md */,
+				71C049FC1F0E2192008DDE98 /* src */,
+				71FD7E911F0A66ED000E352F /* Products */,
+				71C04A211F0E2622008DDE98 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		71FD7E911F0A66ED000E352F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				71FD7E901F0A66ED000E352F /* StreamBasedAL */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		71FD7E8F1F0A66ED000E352F /* StreamBasedAL */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 71FD7E971F0A66ED000E352F /* Build configuration list for PBXNativeTarget "StreamBasedAL" */;
+			buildPhases = (
+				71FD7E8C1F0A66ED000E352F /* Sources */,
+				71FD7E8D1F0A66ED000E352F /* Frameworks */,
+				71FD7E8E1F0A66ED000E352F /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = StreamBasedAL;
+			productName = StreamBasedAL;
+			productReference = 71FD7E901F0A66ED000E352F /* StreamBasedAL */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		71FD7E881F0A66ED000E352F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0830;
+				ORGANIZATIONNAME = "Jonathan Wenger";
+				TargetAttributes = {
+					71FD7E8F1F0A66ED000E352F = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 71FD7E8B1F0A66ED000E352F /* Build configuration list for PBXProject "StreamBasedAL" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 71FD7E871F0A66ED000E352F;
+			productRefGroup = 71FD7E911F0A66ED000E352F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				71FD7E8F1F0A66ED000E352F /* StreamBasedAL */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		71FD7E8C1F0A66ED000E352F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				71C04A151F0E2192008DDE98 /* stream_based_al_experimenter.cpp in Sources */,
+				71C04A1D1F0E2193008DDE98 /* stream_based_al_random.cpp in Sources */,
+				71C04A191F0E2193008DDE98 /* stream_based_al_hyperparameters.cpp in Sources */,
+				71C04A1F1F0E2193008DDE98 /* stream_based_al_utilities.cpp in Sources */,
+				71C04A171F0E2192008DDE98 /* stream_based_al_forest.cpp in Sources */,
+				71C04A1B1F0E2193008DDE98 /* stream_based_al_main.cpp in Sources */,
+				71C04A131F0E2192008DDE98 /* stream_based_al_data.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		71FD7E951F0A66ED000E352F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		71FD7E961F0A66ED000E352F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		71FD7E981F0A66ED000E352F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = /usr/local/include;
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		71FD7E991F0A66ED000E352F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = /usr/local/include;
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		71FD7E8B1F0A66ED000E352F /* Build configuration list for PBXProject "StreamBasedAL" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				71FD7E951F0A66ED000E352F /* Debug */,
+				71FD7E961F0A66ED000E352F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		71FD7E971F0A66ED000E352F /* Build configuration list for PBXNativeTarget "StreamBasedAL" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				71FD7E981F0A66ED000E352F /* Debug */,
+				71FD7E991F0A66ED000E352F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 71FD7E881F0A66ED000E352F /* Project object */;
+}
