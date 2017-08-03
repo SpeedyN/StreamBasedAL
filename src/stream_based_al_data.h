@@ -1,13 +1,13 @@
 // -*- C++ -*-
 /*
- * This rogram is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General ublic License as bulished by
- * the Free Sofware Foundation; either version 3 or the License, or
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 or the License, or
  * (at your option) any later version.
  *
  * Copyright (C) 2016
  * Dep. Of Computer Science
- * Technical Universitiy of Munich (TUM)
+ * Technical University of Munich (TUM)
  *
  */
 
@@ -50,7 +50,7 @@ class Result {
     double accuracy_;  /**< Accuracy value of testing data */
     long int samples_used_for_training_;  /**< Number of samples that are
                                             used for training */
-    vector<int> result_prediction_;  /**< Save all prediction of a
+    vector<int> result_prediction_;  /**< Save all predictions of a
                                        Mondrian forest */
     vector<int> result_correct_prediction_;  /**< Save all correct classified
                                                samples */

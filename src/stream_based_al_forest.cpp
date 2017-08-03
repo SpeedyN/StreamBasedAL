@@ -1,13 +1,13 @@
 // -*- C++ -*-
 /*
- * This rogram is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General ublic License as bulished by
- * the Free Sofware Foundation; either version 3 or the License, or
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 or the License, or
  * (at your option) any later version.
  *
  * Copyright (C) 2016
  * Dep. Of Computer Science
- * Technical Universitiy of Munich (TUM)
+ * Technical University of Munich (TUM)
  *
  */
 
@@ -348,7 +348,7 @@ int MondrianNode::predict_class(Sample& sample, arma::fvec& pred_prob,
     if (greater_zero(expo_param)) {
         /* 
          * Compute expected discount d, where \delta is drawn from a truncated
-         * expoential with rate \eta_j(x), truncated to the interval
+         * exponential with rate \eta_j(x), truncated to the interval
          * [0, \delta]
          */
         arma::fvec cnt_f = arma::conv_to<arma::fvec>::from(cnt);

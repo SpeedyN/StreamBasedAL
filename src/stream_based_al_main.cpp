@@ -1,13 +1,13 @@
 // -*- C++ -*-
 /*
- * This rogram is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General ublic License as bulished by
- * the Free Sofware Foundation; either version 3 or the License, or
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 or the License, or
  * (at your option) any later version.
  *
  * Copyright (C) 2016
  * Dep. Of Computer Science
- * Technical Universitiy of Munich (TUM)
+ * Technical University of Munich (TUM)
  *
  */
 #include <sys/time.h>
@@ -38,7 +38,7 @@ void help() {
     cout << "\t -c : \t\t path to the config file." << endl << endl;
     cout << "\t --train : \t Train the classifier." << endl;
     cout << "\t --test  : \t Test the classifier." << endl;
-    cout << "\t --conidence: \t Calculates a confidence value for each prediction \n \t\t\t (works but will not be saved in some file)" << endl;
+    cout << "\t --confidence: \t Calculates a confidence value for each prediction \n \t\t\t (works but will not be saved in some file)" << endl;
     cout << "\tExamples:" << endl;
     cout << "\t ./StreamBasedAL_MF -c conf/stream_based_al.conf --train --test" << endl;
 }
