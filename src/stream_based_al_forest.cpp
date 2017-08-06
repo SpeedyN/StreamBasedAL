@@ -315,7 +315,7 @@ int MondrianNode::predict_class(Sample& sample, arma::fvec& pred_prob,
                         (mondrian_block_->get_min_block_dim() - sample.x)),2);
         /* 2. Get number of samples at current node */
         m_conf.number_of_points = arma::accu(id_parent_node_->count_labels_);
-        /* 3. Calculate densitiy of current mondrian block */
+        /* 3. Calculate density of current mondrian block */
         //arma::fvec tmp_vec = id_parent_node_->mondrian_block_->get_max_block_dim() - 
         //   id_parent_node_->mondrian_block_->get_min_block_dim();
         //arma::fvec tmp_vec = mondrian_block_->get_max_block_dim() - mondrian_block_->get_min_block_dim();
