@@ -291,7 +291,7 @@ class MondrianNode {
 
         int* num_classes_;  /**< Number of classes */
         float data_counter_;  /**< Count data points */
-        bool is_leaf_;  /**< Boolen variable to indicate if current node
+        bool is_leaf_;  /**< Boolean variable to indicate if current node
                           is a leaf node */
         int split_dim_; /**< Split dimension (feat_id_chosen) */
         float split_loc_; /**< Split location (split_chosen) */
