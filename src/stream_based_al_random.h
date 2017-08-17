@@ -17,6 +17,7 @@
 /*
  * Used to generate random numbers
  */
+#include <boost/random/beta_distribution.hpp>
 #include <boost/random/exponential_distribution.hpp> 
 #include <boost/random/uniform_real.hpp>
 #include <boost/random/variate_generator.hpp>
@@ -52,6 +53,7 @@ class RandomGenerator {
         float rand_uniform_distribution(float min_value, float max_value,
                 bool& equal_values);
         float rand_exp_distribution(float lambda);
+        float rand_beta_distribution(float alpha, float beta);
 
     private:
         static bool seed_flag_;

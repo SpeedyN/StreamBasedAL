@@ -132,7 +132,6 @@ RandomGenerator MondrianNode::random;
 MondrianNode::MondrianNode(int* num_classes, const int& feature_dim, 
        const float& budget, MondrianNode& parent_node,
        const mondrian_settings& settings, int& depth,
-       float& expected_prob_mass,
        float& decision_distr_param_alpha,
        float& decision_distr_param_beta) :
     num_classes_(num_classes),
@@ -144,7 +143,6 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
     budget_(budget),
     settings_(&settings),
     depth_(depth),
-    expected_prob_mass_(expected_prob_mass),
     decision_distr_param_alpha_(decision_distr_param_alpha),
     decision_distr_param_beta_(decision_distr_param_beta){
     
@@ -166,7 +164,6 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
         const float& budget, MondrianNode& parent_node, 
         arma::fvec& min_block_dim, arma::fvec& max_block_dim,
         const mondrian_settings& settings, int& depth,
-        float& expected_prob_mass,
         float& decision_distr_param_alpha,
         float& decision_distr_param_beta) :
     num_classes_(num_classes),
@@ -178,7 +175,6 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
     budget_(budget),
     settings_(&settings),
     depth_(depth),
-    expected_prob_mass_(expected_prob_mass),
     decision_distr_param_alpha_(decision_distr_param_alpha),
     decision_distr_param_beta_(decision_distr_param_beta){
     
@@ -202,7 +198,6 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
         MondrianNode& left_child_node, MondrianNode& right_child_node, 
         arma::fvec& min_block_dim, arma::fvec& max_block_dim,
         const mondrian_settings& settings, int& depth,
-        float& expected_prob_mass,
         float& decision_distr_param_alpha,
         float& decision_distr_param_beta) :
     num_classes_(num_classes),
@@ -214,7 +209,6 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
     budget_(budget),
     settings_(&settings),
     depth_(depth),
-    expected_prob_mass_(expected_prob_mass),
     decision_distr_param_alpha_(decision_distr_param_alpha),
     decision_distr_param_beta_(decision_distr_param_beta) {
 
@@ -899,9 +893,17 @@ void MondrianNode::extend_mondrian_block(const Sample& sample) {
              */
             if (sample.x[split_dim_] <= split_loc_) {
                 assert(id_left_child_node_!=NULL);
+                // Update density parameters
+                bool left_split = true;
+                update_density_parameters(left_split);
+                // Recurse on child
                 id_left_child_node_->extend_mondrian_block(sample);
             } else {
                 assert(id_right_child_node_!=NULL);
+                // Update density parameters
+                bool left_split = false;
+                update_density_parameters(left_split);
+                // Recurse on child
                 id_right_child_node_->extend_mondrian_block(sample);
             }
         } else {
@@ -1015,6 +1017,19 @@ void MondrianNode::extend_mondrian_block(const Sample& sample) {
      
 }
 
+/**
+ * Update parameters of density estimation
+ */
+void MondrianNode::update_density_parameters(bool left_split) {
+    // Update the decision distribution parameters
+    if (left_split){
+        decision_distr_param_beta_++;
+    }else{
+        decision_distr_param_alpha_++;
+    }
+}
+
+
 /*
  * Serialization of Mondrian block
  */
@@ -1042,13 +1057,12 @@ MondrianTree::MondrianTree(const mondrian_settings& settings,
     /* Root note has no parent node -> set NULL pointer */
     MondrianNode* null_parent_node = NULL;
     int depth = 0;
-    float expected_prob_mass = 1;
-    float decision_distr_param_alpha = 1;
-    float decision_distr_param_beta = 1;
+    float decision_distr_param_alpha = settings.decision_prior_hyperparam * 0.5;
+    float decision_distr_param_beta = settings.decision_prior_hyperparam * 0.5;
     /* Initialize root node */
     root_node_ = new MondrianNode( &num_classes_, feature_dim, 
             std::numeric_limits<float>::infinity(),
-            *null_parent_node, settings, depth, expected_prob_mass,
+            *null_parent_node, settings, depth,
             decision_distr_param_alpha, decision_distr_param_beta);
     
 }
@@ -1082,7 +1096,7 @@ void MondrianTree::update(Sample& sample) {
     ++data_counter_;  /* Update counter of data points */
     /* Start updating current sample at the root node of the tree */
     root_node_->update(sample);
-    /* Check if there exist a new root node */
+    /* Check if there exists a new root node */
     root_node_ = root_node_->update_root_node();
     //root_node_->update_posteriors();
     //exit(EXIT_FAILURE);

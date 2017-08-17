@@ -67,3 +67,16 @@ float RandomGenerator::rand_exp_distribution(float lambda) {
         boost::exponential_distribution<float> > exp_gen(generator, exp_dist);
     return exp_gen();
 }
+
+float RandomGenerator::rand_beta_distribution(float alpha, float beta) {
+    if (equal(alpha,0.0) || !greater_zero(alpha) ) {
+        alpha = 1;
+    }
+    if (equal(beta,0.0) || !greater_zero(beta) ) {
+        beta = 1;
+    }
+    boost::random::beta_distribution<> beta_dist(alpha, beta);
+    boost::variate_generator<base_generator_type&,
+        boost::random::beta_distribution<> > beta_gen(generator, beta_dist);
+    return beta_gen();
+}

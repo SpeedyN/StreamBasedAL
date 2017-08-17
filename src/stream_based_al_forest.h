@@ -222,7 +222,6 @@ class MondrianNode {
         MondrianNode(int* num_classes, const int& feature_dim,
                 const float& budget, MondrianNode& parent_node,
                 const mondrian_settings& settings, int& depth,
-                float& expected_prob_mass,
                 float& decision_distr_param_alpha,
                 float& decision_distr_param_beta);
         /**
@@ -236,7 +235,6 @@ class MondrianNode {
                 const float& budget, MondrianNode& parent_node,
                 arma::fvec& min_block_dim, arma::fvec& max_block_dim,
                 const mondrian_settings& settings, int& depth,
-                float& expected_prob_mass,
                 float& decision_distr_param_alpha,
                 float& decision_distr_param_beta);
         /**
@@ -254,7 +252,6 @@ class MondrianNode {
                 MondrianNode& left_child_node, MondrianNode& right_child_node,
                 arma::fvec& min_block_dim, arma::fvec& max_block_dim,
                 const mondrian_settings& settings, int& depth,
-                float& expected_prob_mass,
                 float& decision_distr_param_alpha,
                 float& decision_distr_param_beta);
         ~MondrianNode();
@@ -321,9 +318,6 @@ class MondrianNode {
         MondrianNode* id_parent_node_; /**< Pointer to parent node */
         const mondrian_settings* settings_;  /**< Mondrian settings */
         int depth_;  /**< Current depth of node in the tree */
-        float expected_prob_mass_; /**< Expected probability mass assigned
-                                   to the node given by the decision random
-                                   variables on the path to this node. */
         float decision_distr_param_alpha_; /**< Parameters of the estimated */
         float decision_distr_param_beta_;  /*   decision distribution at this node.*/
         bool debug_;  /**< Set debug mode */
@@ -405,6 +399,12 @@ class MondrianNode {
          * Extend mondrian block to include new training data
          */
         void extend_mondrian_block(const Sample& sample);
+    
+        /**
+         * Update parameters of density estimation, i.e. prior
+         * parameters and probability mass of left/right child node
+         */
+        void update_density_parameters(bool left_split);
 };
 
 /*---------------------------------------------------------------------------*/
