@@ -130,8 +130,11 @@ RandomGenerator MondrianNode::random;
  * Construct tree node
  */
 MondrianNode::MondrianNode(int* num_classes, const int& feature_dim, 
-        const float& budget, MondrianNode& parent_node,
-        const mondrian_settings& settings, int& depth) :
+       const float& budget, MondrianNode& parent_node,
+       const mondrian_settings& settings, int& depth,
+       float& expected_prob_mass,
+       float& decision_distr_param_alpha,
+       float& decision_distr_param_beta) :
     num_classes_(num_classes),
     data_counter_(0),
     is_leaf_(true),
@@ -140,7 +143,10 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
     max_split_costs_(budget),
     budget_(budget),
     settings_(&settings),
-    depth_(depth) {
+    depth_(depth),
+    expected_prob_mass_(expected_prob_mass),
+    decision_distr_param_alpha_(decision_distr_param_alpha),
+    decision_distr_param_beta_(decision_distr_param_beta){
     
     if (settings_->debug)
         cout << "### Init Mondrian Node 1 " << this << endl;
@@ -159,7 +165,10 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
 MondrianNode::MondrianNode(int* num_classes, const int& feature_dim, 
         const float& budget, MondrianNode& parent_node, 
         arma::fvec& min_block_dim, arma::fvec& max_block_dim,
-        const mondrian_settings& settings, int& depth) :
+        const mondrian_settings& settings, int& depth,
+        float& expected_prob_mass,
+        float& decision_distr_param_alpha,
+        float& decision_distr_param_beta) :
     num_classes_(num_classes),
     data_counter_(0),
     is_leaf_(true),  /* Gets false if function set_child_node is called */
@@ -168,7 +177,10 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
     max_split_costs_(budget),
     budget_(budget),
     settings_(&settings),
-    depth_(depth) {
+    depth_(depth),
+    expected_prob_mass_(expected_prob_mass),
+    decision_distr_param_alpha_(decision_distr_param_alpha),
+    decision_distr_param_beta_(decision_distr_param_beta){
     
     if (settings_->debug)
         cout << "### Init Mondrian Node 2 " << this << endl;
@@ -189,7 +201,10 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
         const float& budget, MondrianNode& parent_node, 
         MondrianNode& left_child_node, MondrianNode& right_child_node, 
         arma::fvec& min_block_dim, arma::fvec& max_block_dim,
-        const mondrian_settings& settings, int& depth) :
+        const mondrian_settings& settings, int& depth,
+        float& expected_prob_mass,
+        float& decision_distr_param_alpha,
+        float& decision_distr_param_beta) :
     num_classes_(num_classes),
     data_counter_(0),
     is_leaf_(false),
@@ -198,7 +213,10 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
     max_split_costs_(budget),
     budget_(budget),
     settings_(&settings),
-    depth_(depth) {
+    depth_(depth),
+    expected_prob_mass_(expected_prob_mass),
+    decision_distr_param_alpha_(decision_distr_param_alpha),
+    decision_distr_param_beta_(decision_distr_param_beta) {
 
     if (settings_->debug)
         cout << "### Init Mondrian Node 3 " << this << endl;
@@ -1024,10 +1042,14 @@ MondrianTree::MondrianTree(const mondrian_settings& settings,
     /* Root note has no parent node -> set NULL pointer */
     MondrianNode* null_parent_node = NULL;
     int depth = 0;
+    float expected_prob_mass = 1;
+    float decision_distr_param_alpha = 1;
+    float decision_distr_param_beta = 1;
     /* Initialize root node */
     root_node_ = new MondrianNode( &num_classes_, feature_dim, 
             std::numeric_limits<float>::infinity(),
-            *null_parent_node, settings, depth);
+            *null_parent_node, settings, depth, expected_prob_mass,
+            decision_distr_param_alpha, decision_distr_param_beta);
     
 }
 

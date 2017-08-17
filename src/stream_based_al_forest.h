@@ -221,7 +221,10 @@ class MondrianNode {
         MondrianNode() : settings_(NULL) {};
         MondrianNode(int* num_classes, const int& feature_dim,
                 const float& budget, MondrianNode& parent_node,
-                const mondrian_settings& settings, int& depth);
+                const mondrian_settings& settings, int& depth,
+                float& expected_prob_mass,
+                float& decision_distr_param_alpha,
+                float& decision_distr_param_beta);
         /**
          * Construct tree node with given values of boundaries of
          * the Mondrian block
@@ -232,23 +235,29 @@ class MondrianNode {
         MondrianNode(int* num_classes, const int& feature_dim, 
                 const float& budget, MondrianNode& parent_node,
                 arma::fvec& min_block_dim, arma::fvec& max_block_dim,
-                const mondrian_settings& settings, int& depth);
+                const mondrian_settings& settings, int& depth,
+                float& expected_prob_mass,
+                float& decision_distr_param_alpha,
+                float& decision_distr_param_beta);
         /**
          * Construct tree node with given values of boundaries of
          * the Mondrian block and one existing child node
          *
-         * @param parent_node: Pointer to parent node
-         * @param left_child_node: Pointer to left child node
-         * @param right_child_node: Pointer to right child node
-         * @param min_block_dim: Lower boundary of Mondrian block
-         * @param max_block_dim: Upper boundary of Mondrian block
+         * @param parent_node       : Pointer to parent node
+         * @param left_child_node   : Pointer to left child node
+         * @param right_child_node  : Pointer to right child node
+         * @param min_block_dim     : Lower boundary of Mondrian block
+         * @param max_block_dim     : Upper boundary of Mondrian block
          */
         MondrianNode(int* num_classes, const int& feature_dim,
                 const float& budget, MondrianNode& parent_node, 
                 MondrianNode& left_child_node, MondrianNode& right_child_node,
                 arma::fvec& min_block_dim, arma::fvec& max_block_dim,
-                const mondrian_settings& settings, int& depth);
-        ~MondrianNode();       
+                const mondrian_settings& settings, int& depth,
+                float& expected_prob_mass,
+                float& decision_distr_param_alpha,
+                float& decision_distr_param_beta);
+        ~MondrianNode();
         /**
          * Print information of current node
          */
@@ -312,6 +321,11 @@ class MondrianNode {
         MondrianNode* id_parent_node_; /**< Pointer to parent node */
         const mondrian_settings* settings_;  /**< Mondrian settings */
         int depth_;  /**< Current depth of node in the tree */
+        float expected_prob_mass_; /**< Expected probability mass assigned
+                                   to the node given by the decision random
+                                   variables on the path to this node. */
+        float decision_distr_param_alpha_; /**< Parameters of the estimated */
+        float decision_distr_param_beta_;  /*   decision distribution at this node.*/
         bool debug_;  /**< Set debug mode */
 
         static RandomGenerator random;  /**< Random generator */
