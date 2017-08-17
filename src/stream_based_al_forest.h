@@ -401,10 +401,15 @@ class MondrianNode {
         void extend_mondrian_block(const Sample& sample);
     
         /**
-         * Update parameters of density estimation, i.e. prior
-         * parameters and probability mass of left/right child node
+         * Update distribution parameters of the density estimate
          */
         void update_density_parameters(bool left_split);
+    
+        /**
+         * Update prior distribution parameters of the density estimate
+         * at a leaf
+         */
+        void update_density_parameters_leaf();
 };
 
 /*---------------------------------------------------------------------------*/

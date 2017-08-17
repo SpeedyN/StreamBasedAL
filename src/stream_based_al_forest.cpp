@@ -877,13 +877,17 @@ void MondrianNode::extend_mondrian_block(const Sample& sample) {
     }
 
     /*
-     * Check if current point lies
-     *  (1) Current point lies within Mondrian Block B^x_j
-     *  (2) Current point lies outside block B^x_j
+     *  (1) Current budget is not enough, i.e.
+                - point lies within Mondrian Block B^x_j
+            or  - point lies outside block B^x_j and exponential 
+                  draw + old budget exceeds budget
+     *  (2) Current budget is enough, i.e.
+                - point lies outside block B^x_j and exponential
+                  draw + old budget does NOT exceed budget
      */
     if (equal(split_cost, max_split_costs_) == true || 
             split_cost > max_split_costs_) {
-        /* (1) Current point lies within Mondrian Block B^x_j */
+        /* (1) Current budget is not enough */
         if (!is_leaf_) {    
             mondrian_block_->update_range_states(sample.x); 
             add_training_point_to_node(sample);
@@ -891,18 +895,17 @@ void MondrianNode::extend_mondrian_block(const Sample& sample) {
              * Check split dimension/location to choose left or right node
              * and recurse on child 
              */
+            bool left_split = true;
             if (sample.x[split_dim_] <= split_loc_) {
                 assert(id_left_child_node_!=NULL);
                 // Update density parameters
-                bool left_split = true;
                 update_density_parameters(left_split);
                 // Recurse on child
                 id_left_child_node_->extend_mondrian_block(sample);
             } else {
                 assert(id_right_child_node_!=NULL);
                 // Update density parameters
-                bool left_split = false;
-                update_density_parameters(left_split);
+                update_density_parameters(!left_split);
                 // Recurse on child
                 id_right_child_node_->extend_mondrian_block(sample);
             }
@@ -915,9 +918,13 @@ void MondrianNode::extend_mondrian_block(const Sample& sample) {
              * because of new node would take new boundary properties */
             mondrian_block_->update_range_states(sample.x);
             add_training_point_to_node(sample);
+            /* Update decision prior parameters for density estimation */
+            update_density_parameters_leaf();
         }
     } else {
-        /* (2) Current point lies outside block B^x_j */
+        /* (2) Current budget is enough, i.e.
+                - point lies outside block B^x_j and exponential
+                  draw + old budget does NOT exceed budget */
         /* Initialize new parent node */
         int feature_dim = mondrian_block_->get_feature_dim();
         arma::fvec min_block = arma::min(mondrian_block_->get_min_block_dim(), 
@@ -1018,7 +1025,7 @@ void MondrianNode::extend_mondrian_block(const Sample& sample) {
 }
 
 /**
- * Update parameters of density estimation
+ * Update distribution parameters of density estimation
  */
 void MondrianNode::update_density_parameters(bool left_split) {
     // Update the decision distribution parameters
@@ -1027,6 +1034,25 @@ void MondrianNode::update_density_parameters(bool left_split) {
     }else{
         decision_distr_param_alpha_++;
     }
+}
+
+/**
+ * Update prior distribution parameters of the density estimate
+ * at a leaf
+ */
+void MondrianNode::update_density_parameters_leaf() {
+    arma::fvec parent_max_block = id_parent_node_->mondrian_block_->get_max_block_dim();
+    arma::fvec parent_min_block = id_parent_node_->mondrian_block_->get_min_block_dim();
+    arma::fvec split_vec_tmp = parent_min_block;
+    split_vec_tmp(id_parent_node_->split_dim_) = id_parent_node_->split_loc_;
+    float volume_right = prod(parent_max_block - split_vec_tmp);
+    split_vec_tmp = parent_max_block;
+    split_vec_tmp(id_parent_node_->split_dim_) = id_parent_node_->split_loc_;
+    float volume_left = prod(split_vec_tmp - parent_min_block);
+    decision_distr_param_beta_ = settings_->decision_prior_hyperparam * pow(depth_+1,2) *
+                                    volume_left/(volume_right + volume_left);
+    decision_distr_param_alpha_ = settings_->decision_prior_hyperparam * pow(depth_+1,2) *
+                                    volume_right/(volume_right + volume_left);
 }
 
 
