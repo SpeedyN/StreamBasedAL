@@ -42,6 +42,7 @@ class Hyperparameters {
         int num_trees_;  /**< Number of trees of Mondrian forest */
         float init_budget_;  /**< Initial budget of a Mondrian tree */
         float discount_factor_;  /**< Discount parameter of a Mondrian tree */
+        float decision_prior_hyperparam_; /**< Hyperparameter of the beta prior of each node */
         bool debug_;  /**< Debug mode */
         int max_samples_in_one_node_;  /**< Splits a node if this number
                                          is reached */

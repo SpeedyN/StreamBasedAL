@@ -119,6 +119,7 @@ int main(int argc, char *argv[]) {
     mondrian_settings* settings = new mondrian_settings;
     settings->num_trees = hp.num_trees_; 
     settings->discount_factor = hp.discount_factor_;
+    settings->decision_prior_hyperparam = hp.decision_prior_hyperparam_;
     settings->discount_param = settings->discount_factor * float(feat_dim);
     settings->debug = hp.debug_;
     settings->max_samples_in_one_node = hp.max_samples_in_one_node_;

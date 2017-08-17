@@ -64,6 +64,7 @@ struct mondrian_settings {
     float init_budget;
     float discount_factor;
     float discount_param;
+    float decision_prior_hyperparam;
     bool debug;
     int max_samples_in_one_node;
 };

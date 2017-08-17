@@ -40,6 +40,7 @@ Hyperparameters::Hyperparameters(const string& conf_file) {
     num_trees_ = config_file.lookup("Mondrian.num_trees");
     init_budget_ = config_file.lookup("Mondrian.init_budget");
     discount_factor_ = config_file.lookup("Mondrian.discount_factor");
+    decision_prior_hyperparam_ = config_file.lookup("Mondrian.decision_prior_hyperparam");
     debug_ = (bool)config_file.lookup("Mondrian.debug"); 
     max_samples_in_one_node_ = config_file.lookup(
         "Mondrian.max_samples_in_one_node");
