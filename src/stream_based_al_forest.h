@@ -221,9 +221,7 @@ class MondrianNode {
         MondrianNode() : settings_(NULL) {};
         MondrianNode(int* num_classes, const int& feature_dim,
                 const float& budget, MondrianNode& parent_node,
-                const mondrian_settings& settings, int& depth,
-                float& decision_distr_param_alpha,
-                float& decision_distr_param_beta);
+                const mondrian_settings& settings, int& depth);
         /**
          * Construct tree node with given values of boundaries of
          * the Mondrian block
@@ -234,9 +232,7 @@ class MondrianNode {
         MondrianNode(int* num_classes, const int& feature_dim, 
                 const float& budget, MondrianNode& parent_node,
                 arma::fvec& min_block_dim, arma::fvec& max_block_dim,
-                const mondrian_settings& settings, int& depth,
-                float& decision_distr_param_alpha,
-                float& decision_distr_param_beta);
+                const mondrian_settings& settings, int& depth);
         /**
          * Construct tree node with given values of boundaries of
          * the Mondrian block and one existing child node
@@ -251,9 +247,7 @@ class MondrianNode {
                 const float& budget, MondrianNode& parent_node, 
                 MondrianNode& left_child_node, MondrianNode& right_child_node,
                 arma::fvec& min_block_dim, arma::fvec& max_block_dim,
-                const mondrian_settings& settings, int& depth,
-                float& decision_distr_param_alpha,
-                float& decision_distr_param_beta);
+                const mondrian_settings& settings, int& depth);
         ~MondrianNode();
         /**
          * Print information of current node
@@ -401,15 +395,16 @@ class MondrianNode {
         void extend_mondrian_block(const Sample& sample);
     
         /**
-         * Update distribution parameters of the density estimate
+         * Compute the posterior distribution of the decision at the current
+         * node by incrementing the corresponding parameter.
          */
-        void update_density_parameters(bool left_split);
+        void increment_decision_distr_params(bool left_split);
     
         /**
-         * Update prior distribution parameters of the density estimate
-         * at a leaf
+         * Set distribution parameters of the decision at the current node
+         * to the prior, i.e. based on block volume and split of parent
          */
-        void update_density_parameters_leaf();
+        void update_decision_distr_params();
 };
 
 /*---------------------------------------------------------------------------*/
