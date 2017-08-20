@@ -140,7 +140,10 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
     max_split_costs_(budget),
     budget_(budget),
     settings_(&settings),
-    depth_(depth){
+    depth_(depth),
+    decision_distr_param_alpha_(0.),
+    decision_distr_param_beta_(0.),
+    expected_prob_mass_(0.){
     
     if (settings_->debug)
         cout << "### Init Mondrian Node 1 " << this << endl;
@@ -150,8 +153,6 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
     id_left_child_node_ = NULL;
     id_right_child_node_ = NULL;
     pred_prob_ = arma::fvec(*num_classes, arma::fill::zeros);
-    // Initialize decision distribution parameters
-    update_decision_distr_params();
 }
 
 /*
@@ -170,7 +171,10 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
     max_split_costs_(budget),
     budget_(budget),
     settings_(&settings),
-    depth_(depth){
+    depth_(depth),
+    decision_distr_param_alpha_(0.),
+    decision_distr_param_beta_(0.),
+    expected_prob_mass_(0.){
     
     if (settings_->debug)
         cout << "### Init Mondrian Node 2 " << this << endl;
@@ -181,8 +185,6 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
     id_left_child_node_ = NULL;
     id_right_child_node_ = NULL;
     pred_prob_ = arma::fvec(*num_classes, arma::fill::zeros);
-    // Initialize decision distribution parameters
-    update_decision_distr_params();
 }
 
 /*
@@ -202,7 +204,10 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
     max_split_costs_(budget),
     budget_(budget),
     settings_(&settings),
-    depth_(depth) {
+    depth_(depth),
+    decision_distr_param_alpha_(0.),
+    decision_distr_param_beta_(0.),
+    expected_prob_mass_(0.){
 
     if (settings_->debug)
         cout << "### Init Mondrian Node 3 " << this << endl;
@@ -214,8 +219,6 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
     id_left_child_node_ = &left_child_node;
     id_right_child_node_ = &right_child_node;
     pred_prob_ = arma::fvec(*num_classes, arma::fill::zeros);
-    // Initialize decision distribution parameters
-    update_decision_distr_params();
 }
 
 MondrianNode::~MondrianNode() {
@@ -475,7 +478,7 @@ bool MondrianNode::check_if_same_labels(const Sample& sample){
     bool same_labels = false;
     /* Function "count" returns number of values that are zero */
     arma::Col<arma::uword> zero_elem = arma::find(count_labels_ < 1);
-    unsigned int count_val = zero_elem.size();
+    unsigned int count_val = (unsigned int) zero_elem.size();
     if (count_val == (unsigned int)count_labels_.size()) {
         /* All elements are zero */
         same_labels = true;
@@ -526,7 +529,6 @@ void MondrianNode::update_posterior_node_incremental(const Sample& sample) {
 void MondrianNode::init_update_posterior_node_incremental(
         MondrianNode& node_id, const Sample& sample) {
     if (&node_id == NULL) { 
-        
         /* 
          * Initialize histogram of current node with zeros.
          * Size of histogram depends on current number of classes.
@@ -548,7 +550,7 @@ void MondrianNode::init_update_posterior_node_incremental(
  */
 void MondrianNode::init_update_posterior_node_incremental(
         MondrianNode& node_id) {
-    if (&node_id == NULL) { 
+    if (&node_id == NULL) {
         /* 
          * Initialize histogram of current node with zeros.
          * Size of histogram depends on current number of classes.
@@ -737,7 +739,6 @@ void MondrianNode::sample_mondrian_block(const Sample& sample,
         arma::fvec dim_range = max_block_sample - min_block_sample;
 
         /* Sample split dimension */
-        ///split_dim_ = sample_multinomial_scores(min_block);
         split_dim_ = sample_multinomial_scores(dim_range);
         /* Check if it is possible to introduce a split in current dimension */
         int count_sample_search = 0;
@@ -764,7 +765,14 @@ void MondrianNode::sample_mondrian_block(const Sample& sample,
                 equal(min_block[split_dim_],sample.x[split_dim_])) {
             max_block = mondrian_block_->get_min_block_dim();
             min_block = sample.x;
-        } 
+        }
+        /* Set decision prior parameters for density estimation */
+        arma::fvec tmp_max_block_sample = max_block_sample;
+        if(max_block_sample[split_dim_] < split_loc_){
+            tmp_max_block_sample += eps; //TODO: fix uniform sampling implementation and remove this
+        }
+        set_decision_distr_params(min_block_sample, tmp_max_block_sample);
+        
         if (settings_->debug) {
             cout << "min_block: " << min_block << endl;
             cout << "max_block: " << max_block << endl;
@@ -824,8 +832,6 @@ void MondrianNode::sample_mondrian_block(const Sample& sample,
                 
     } else {
         is_leaf_ = true;
-        /* Update decision prior parameters for density estimation */
-        update_decision_distr_params();
     }
 }
 
@@ -914,8 +920,6 @@ void MondrianNode::extend_mondrian_block(const Sample& sample) {
              * because of new node would take new boundary properties */
             mondrian_block_->update_range_states(sample.x);
             add_training_point_to_node(sample);
-            /* Update decision prior parameters for density estimation */
-            update_decision_distr_params();
         }
     } else {
         /* (2) Current budget is enough, i.e.
@@ -986,7 +990,7 @@ void MondrianNode::extend_mondrian_block(const Sample& sample) {
         MondrianNode* child_node = new MondrianNode(num_classes_,
                 feature_dim, new_budget, *new_parent_node,
                 new_child_block, new_child_block, *settings_, new_depth);
-        /* Set child nodes of new created parent node ("new_parent_node") */
+        /* Set child nodes of newly created parent node ("new_parent_node") */
         new_parent_node->set_child_node(*child_node, (!is_left_node));
         new_parent_node->set_child_node(*this, is_left_node);
         new_parent_node->is_leaf_ = false;
@@ -1016,55 +1020,86 @@ void MondrianNode::extend_mondrian_block(const Sample& sample) {
         new_parent_node->split_dim_ = split_dim;
         max_split_costs_ -= split_cost;
         update_depth();
-        /* Update decision prior parameters for density estimation */
-        child_node->update_decision_distr_params();    }
-    
+        
+        /* Set decision prior parameters for density estimation */
+        new_parent_node->set_decision_distr_params(min_block, max_block);
+    }
 }
 
 /**
- * Compute the posterior distribution of the decision at the current
+ * Compute the posterior of the decision distribution at the current
  * node by incrementing the corresponding parameter.
  */
 void MondrianNode::increment_decision_distr_params(bool left_split) {
     // Increment the decision distribution parameters
     if (left_split){
-        decision_distr_param_beta_++;
+        decision_distr_param_beta_+= 1;
     }else{
-        decision_distr_param_alpha_++;
+        decision_distr_param_alpha_+= 1;
     }
 }
 
 /**
- * Set distribution parameters of the decision at the current node
- * to the prior, i.e. based on block volume and split of parent
+ * Set the parameters of the decision distribution at the current node
+ * to the prior, i.e. to the default for the root node and otherwise
+ * based on block volume and split of parent
  */
-void MondrianNode::update_decision_distr_params() {
-    if(id_parent_node_ == NULL) {
-        // Set the prior parameters to half/half at the root node
-        decision_distr_param_alpha_ = settings_->decision_prior_hyperparam * 0.5;
-        decision_distr_param_beta_ = settings_->decision_prior_hyperparam * 0.5;
-    }else{
+void MondrianNode::set_decision_distr_params(arma::fvec& min_block, arma::fvec& max_block){
+        // Compute linear volume of right half of parent mondrian block
+        arma::fvec split_vec_tmp = min_block;
+        split_vec_tmp[split_dim_] = split_loc_;
+        assert(all(max_block >= split_vec_tmp));
+        float volume_right = sum(max_block - split_vec_tmp);
+        // Compute linear volume of left half of parent mondrian block
+        split_vec_tmp = max_block;
+        split_vec_tmp[split_dim_] = split_loc_;
+        assert(all(split_vec_tmp >= min_block));
+        float volume_left = sum(split_vec_tmp - min_block);
+    
         // Set the prior parameters based on the Mondrian block dimensions of the parent node
-        arma::fvec parent_max_block = id_parent_node_->mondrian_block_->get_max_block_dim();
-        arma::fvec parent_min_block = id_parent_node_->mondrian_block_->get_min_block_dim();
-        arma::fvec split_vec_tmp = parent_min_block;
-        split_vec_tmp(id_parent_node_->split_dim_) = id_parent_node_->split_loc_;
-        if(any(parent_max_block < split_vec_tmp)){
-            // Block bounds are not updated yet
-            return;
-        }
-        float volume_right = sum(parent_max_block - split_vec_tmp);
-        split_vec_tmp = parent_max_block;
-        split_vec_tmp(id_parent_node_->split_dim_) = id_parent_node_->split_loc_;
-        if(any(split_vec_tmp < parent_min_block)){
-            // Block bounds are not updated yet
-            return;
-        }
-        float volume_left = sum(split_vec_tmp - parent_min_block);
         decision_distr_param_beta_ = settings_->decision_prior_hyperparam * pow(depth_+1,2) *
                                         volume_left/(volume_right + volume_left);
         decision_distr_param_alpha_ = settings_->decision_prior_hyperparam * pow(depth_+1,2) *
                                         volume_right/(volume_right + volume_left);
+        assert(decision_distr_param_alpha_ > 0 && decision_distr_param_alpha_ < INFINITY);
+        assert(decision_distr_param_beta_ > 0 && decision_distr_param_beta_ < INFINITY);
+}
+
+/**
+ * Update the expected probability mass of the node and subsequent
+ * children based on the parameters of the decision distributions.
+ */
+void MondrianNode::update_expected_prob_mass(){
+    if (id_parent_node_ == NULL){
+        expected_prob_mass_ = 1;
+    }else{
+        float alpha = id_parent_node_->decision_distr_param_alpha_;
+        float beta = id_parent_node_->decision_distr_param_beta_;
+
+        if(id_parent_node_->id_left_child_node_ == this){
+            expected_prob_mass_ = id_parent_node_->expected_prob_mass_*beta/(alpha+beta);
+        }else{
+            expected_prob_mass_ = id_parent_node_->expected_prob_mass_*alpha/(alpha+beta);
+        }
+    }
+    if(!is_leaf_){
+        id_left_child_node_->update_expected_prob_mass(true);
+        id_right_child_node_->update_expected_prob_mass(false);
+    }
+}
+
+void MondrianNode::update_expected_prob_mass(bool is_left){
+    float alpha = id_parent_node_->decision_distr_param_alpha_;
+    float beta = id_parent_node_->decision_distr_param_beta_;
+    
+    if(is_left){
+        expected_prob_mass_ = id_parent_node_->expected_prob_mass_*beta/(alpha+beta);
+    }else{
+        expected_prob_mass_ = id_parent_node_->expected_prob_mass_*alpha/(alpha+beta);
+    }
+    if(!is_leaf_){
+        id_left_child_node_->update_expected_prob_mass(true);
+        id_right_child_node_->update_expected_prob_mass(false);
     }
 }
 
@@ -1134,9 +1169,8 @@ void MondrianTree::update(Sample& sample) {
     root_node_->update(sample);
     /* Check if there exists a new root node */
     root_node_ = root_node_->update_root_node();
-    //root_node_->update_posteriors();
-    //exit(EXIT_FAILURE);
-     
+    /* Update expected probability masses */
+    root_node_->update_expected_prob_mass();
 }
 /*
  * Predict class of current sample
@@ -1264,8 +1298,6 @@ pair<int, float> MondrianForest::predict_class_confident(Sample& sample) {
 
     /* Go through all trees and calculate probability */
     arma::fvec pred_prob = predict_probability(sample, m_conf);
-    
-    float prob_mass = compute_exp_prob_mass(sample);
 
     int pred_class = -1;  /* Predicted class of Mondrian forest */
     float tmp_value = 0.;

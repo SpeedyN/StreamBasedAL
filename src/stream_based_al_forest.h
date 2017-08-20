@@ -283,6 +283,12 @@ class MondrianNode {
          *                       2. update count_labels_ (label histogram)
          */
         void update(const Sample& sample);
+        /**
+         * Update the expected probability mass of the node and subsequent
+         * children based on the parameters of the decision distribution.
+         */
+        void update_expected_prob_mass();
+        void update_expected_prob_mass(bool is_left);
 
     private:
         /**< Set functions ostream and serialization as friend */
@@ -312,8 +318,11 @@ class MondrianNode {
         MondrianNode* id_parent_node_; /**< Pointer to parent node */
         const mondrian_settings* settings_;  /**< Mondrian settings */
         int depth_;  /**< Current depth of node in the tree */
-        float decision_distr_param_alpha_; /**< Parameters of the estimated */
-        float decision_distr_param_beta_;  /*   decision distribution at this node.*/
+        float decision_distr_param_alpha_; /**< Parameter alpha of the estimated
+                                                decision distribution of the node */
+        float decision_distr_param_beta_;  /**< Parameter beta of the estimated
+                                                decision distribution of the node */
+        float expected_prob_mass_; /**< Expected probability mass of the node */
         bool debug_;  /**< Set debug mode */
 
         static RandomGenerator random;  /**< Random generator */
@@ -395,16 +404,16 @@ class MondrianNode {
         void extend_mondrian_block(const Sample& sample);
     
         /**
-         * Compute the posterior distribution of the decision at the current
+         * Compute the posterior of the decision distribution at the current
          * node by incrementing the corresponding parameter.
          */
         void increment_decision_distr_params(bool left_split);
     
         /**
-         * Set distribution parameters of the decision at the current node
+         * Set the parameters of the decision distribution at the current node
          * to the prior, i.e. based on block volume and split of parent
          */
-        void update_decision_distr_params();
+        void set_decision_distr_params(arma::fvec& min_block, arma::fvec& max_block);
 };
 
 /*---------------------------------------------------------------------------*/

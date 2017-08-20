@@ -34,7 +34,7 @@ float RandomGenerator::rand_uniform_distribution() {
 float RandomGenerator::rand_uniform_distribution(
         float min_value, float max_value) {
     if (equal(min_value,max_value)) {
-        max_value += eps;
+        max_value += eps; //TODO: find way around this, causes bugs down the road
         //cout << "[WARNING]: - rand_uniform_distribution: min_value == max_value" << endl;
     }
     float rand_value = min_value + (max_value - min_value) * 
