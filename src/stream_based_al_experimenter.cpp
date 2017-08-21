@@ -95,7 +95,7 @@ void Experimenter::train_active(MondrianForest* mf, DataSet& dataset,
   /* Set number of training samples */
   unsigned int number_training_samples = 0;
   if (hp.number_of_samples_for_training_ == 0)
-    number_training_samples = dataset.num_samples_;
+    number_training_samples = (int) dataset.num_samples_;
   else
     number_training_samples = hp.number_of_samples_for_training_;
 

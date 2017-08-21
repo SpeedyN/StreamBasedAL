@@ -340,7 +340,7 @@ int MondrianNode::predict_class(Sample& sample, arma::fvec& pred_prob,
         /* 2. Get number of samples at current node */
         m_conf.number_of_points = (int) arma::accu(id_parent_node_->count_labels_);
         /* 3. Calculate normalized density at leaf */
-        m_conf.density =
+        m_conf.normalized_density =
         expected_prob_mass_/mondrian_tree_->get_max_prob_mass_leaf()->expected_prob_mass_;
     }
     /* Probability that x_i will branch off into its own node at node j */
@@ -1369,12 +1369,15 @@ arma::fvec MondrianForest::predict_probability(Sample& sample,
         mondrian_confidence& m_conf) {
     /* Go through all trees and calculate probability */
     arma::fvec pred_prob(trees_[0]->num_classes_, arma::fill::zeros);
+    float tmp_normalized_density_forest = 0;
     for (int n_tree = 0; n_tree < settings_->num_trees; n_tree++) {
         arma::fvec tmp_pred_prob(trees_[0]->num_classes_, arma::fill::zeros);
         trees_[n_tree]->predict_class(sample, tmp_pred_prob, m_conf);
+        tmp_normalized_density_forest += m_conf.normalized_density;
         pred_prob += tmp_pred_prob;
     }
     pred_prob = pred_prob / settings_->num_trees;
+    m_conf.normalized_density = tmp_normalized_density_forest/settings_->num_trees;
 
     return pred_prob;
 }
@@ -1387,6 +1390,7 @@ float MondrianForest::confidence_prediction(arma::fvec& pred_prob,
         mondrian_confidence& m_conf) {
     float confidence = 0.0;
     
+    if(settings_->confidence_measure == 0){
     /* Confidence: first best vs. second best */
     float first_class = 0.0;
     for (int i = 0; i < int(pred_prob.size()); i++) {
@@ -1405,8 +1409,13 @@ float MondrianForest::confidence_prediction(arma::fvec& pred_prob,
     } else {
         confidence = first_class;
     }
-    
-    /* Take mondrian confidence into account */
+    }
+    else if(settings_->confidence_measure == 1){
+    /* Confidence: normalized entropy */
+        
+    }
+        
+    /* Take normalized density account */
     int feature_dim = int(settings_->discount_param / settings_->discount_factor);
     float new_confidence = (1 - (5 * m_conf.distance/feature_dim)) * confidence;
     if (new_confidence < 0)

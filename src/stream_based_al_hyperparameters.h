@@ -46,6 +46,7 @@ class Hyperparameters {
         bool debug_;  /**< Debug mode */
         int max_samples_in_one_node_;  /**< Splits a node if this number
                                          is reached */
+        int confidence_measure_; /**< Type of confidence measure used in query */
         bool print_properties_;  /**< Print properties of a Mondrian Forest */
 
         /* Parameters for training */

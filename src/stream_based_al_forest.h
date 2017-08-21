@@ -67,6 +67,7 @@ struct mondrian_settings {
     float decision_prior_hyperparam;
     bool debug;
     int max_samples_in_one_node;
+    int confidence_measure;
 };
 /*---------------------------------------------------------------------------*/
 /**
@@ -74,7 +75,7 @@ struct mondrian_settings {
  */
 struct mondrian_confidence {
     int number_of_points;
-    float density;
+    float normalized_density;
     float distance;
 };
 /*---------------------------------------------------------------------------*/
@@ -519,7 +520,7 @@ class MondrianForest {
     private:
         float data_counter_;  /**< Count incoming data points */
         vector<MondrianTree*> trees_;  /**< Save all Mondrian trees */
-        const mondrian_settings* settings_;  /**< Setting of Mondrian forest */
+        const mondrian_settings* settings_;  /**< Settings of a Mondrian forest */
         /*
          * Calculates probability of current sample
          * (returns probability of all classes)

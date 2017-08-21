@@ -123,6 +123,7 @@ int main(int argc, char *argv[]) {
     settings->discount_param = settings->discount_factor * float(feat_dim);
     settings->debug = hp.debug_;
     settings->max_samples_in_one_node = hp.max_samples_in_one_node_;
+    settings->confidence_measure = hp.confidence_measure_;
 
 /*---------------------------------------------------------------------------*/
     /* Initialize Mondrian forest */

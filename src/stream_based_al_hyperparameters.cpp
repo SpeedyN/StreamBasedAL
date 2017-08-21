@@ -44,6 +44,7 @@ Hyperparameters::Hyperparameters(const string& conf_file) {
     debug_ = (bool)config_file.lookup("Mondrian.debug"); 
     max_samples_in_one_node_ = config_file.lookup(
         "Mondrian.max_samples_in_one_node");
+    confidence_measure_ = (int) config_file.lookup("Mondrian.confidence_measure");
     print_properties_ = (bool)config_file.lookup("Mondrian.print_properties");
 
     /* Parameters for training */
