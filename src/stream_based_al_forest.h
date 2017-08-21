@@ -221,9 +221,10 @@ class MondrianNode {
          * Construct tree node
          */
         MondrianNode() : settings_(NULL) {};
-        MondrianNode(int* num_classes, const int& feature_dim,
-                const float& budget, MondrianNode& parent_node,
-                const mondrian_settings& settings, int& depth);
+        MondrianNode(MondrianTree& mondrian_tree, int* num_classes,
+                const int& feature_dim, const float& budget,
+                MondrianNode& parent_node, const mondrian_settings& settings,
+                int& depth);
         /**
          * Construct tree node with given values of boundaries of
          * the Mondrian block
@@ -231,8 +232,9 @@ class MondrianNode {
          * @param min_block_dim : Lower boundary of Mondrian block
          * @param max_block_dim : Upper boundary of Mondrian block
          */
-        MondrianNode(int* num_classes, const int& feature_dim, 
-                const float& budget, MondrianNode& parent_node,
+        MondrianNode(MondrianTree& mondrian_tree, int* num_classes,
+                const int& feature_dim, const float& budget,
+                MondrianNode& parent_node,
                 arma::fvec& min_block_dim, arma::fvec& max_block_dim,
                 const mondrian_settings& settings, int& depth);
         /**
@@ -245,8 +247,9 @@ class MondrianNode {
          * @param min_block_dim     : Lower boundary of Mondrian block
          * @param max_block_dim     : Upper boundary of Mondrian block
          */
-        MondrianNode(int* num_classes, const int& feature_dim,
-                const float& budget, MondrianNode& parent_node, 
+        MondrianNode(MondrianTree& mondrian_tree, int* num_classes,
+                const int& feature_dim, const float& budget,
+                MondrianNode& parent_node,
                 MondrianNode& left_child_node, MondrianNode& right_child_node,
                 arma::fvec& min_block_dim, arma::fvec& max_block_dim,
                 const mondrian_settings& settings, int& depth);
@@ -456,14 +459,17 @@ class MondrianTree {
          */
         int predict_class(Sample& sample, arma::fvec& pred_prob,
                 mondrian_confidence& m_conf);
-        MondrianNode* get_max_prob_mass_node();
-        void set_max_prob_mass_node(MondrianNode* new_max_prob_mass_node);
+        MondrianNode* get_max_prob_mass_leaf();
+        /**
+         *  Set the pointer to the leaf with the maximum probability mass in the tree
+         */
+        void set_max_prob_mass_leaf(MondrianNode& new_max_prob_mass_leaf);
 
     private:
 
         float data_counter_;  /**< Count data points */
         MondrianNode* root_node_;  /**< Pointer to root node */
-        MondrianNode* max_prob_mass_node_;  /**< Pointer to node with maximum probability mass*/
+        MondrianNode* max_prob_mass_leaf_;  /**< Pointer to leaf with maximum probability mass*/
         const mondrian_settings* settings_;  /**< Settings of Mondrian forest */
         /**
          * Update number of classes 
