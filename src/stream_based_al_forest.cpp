@@ -153,6 +153,9 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
     id_left_child_node_ = NULL;
     id_right_child_node_ = NULL;
     pred_prob_ = arma::fvec(*num_classes, arma::fill::zeros);
+    if(id_parent_node_ != NULL){
+        mondrian_tree_ = id_parent_node_->mondrian_tree_;
+    }
 }
 
 /*
@@ -185,6 +188,9 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
     id_left_child_node_ = NULL;
     id_right_child_node_ = NULL;
     pred_prob_ = arma::fvec(*num_classes, arma::fill::zeros);
+    if(id_parent_node_ != NULL){
+        mondrian_tree_ = id_parent_node_->mondrian_tree_;
+    }
 }
 
 /*
@@ -219,6 +225,9 @@ MondrianNode::MondrianNode(int* num_classes, const int& feature_dim,
     id_left_child_node_ = &left_child_node;
     id_right_child_node_ = &right_child_node;
     pred_prob_ = arma::fvec(*num_classes, arma::fill::zeros);
+    if(id_parent_node_ != NULL){
+        mondrian_tree_ = id_parent_node_->mondrian_tree_;
+    }
 }
 
 MondrianNode::~MondrianNode() {
@@ -323,7 +332,7 @@ int MondrianNode::predict_class(Sample& sample, arma::fvec& pred_prob,
             arma::norm(arma::max(zero_vec, 
                         (mondrian_block_->get_min_block_dim() - sample.x)),2);
         /* 2. Get number of samples at current node */
-        m_conf.number_of_points = arma::accu(id_parent_node_->count_labels_);
+        m_conf.number_of_points = (int) arma::accu(id_parent_node_->count_labels_);
         /* 3. Calculate density of current mondrian block */
         //arma::fvec tmp_vec = id_parent_node_->mondrian_block_->get_max_block_dim() - 
         //   id_parent_node_->mondrian_block_->get_min_block_dim();
@@ -1073,31 +1082,32 @@ void MondrianNode::update_expected_prob_mass(){
     if (id_parent_node_ == NULL){
         expected_prob_mass_ = 1;
     }else{
-        float alpha = id_parent_node_->decision_distr_param_alpha_;
-        float beta = id_parent_node_->decision_distr_param_beta_;
-
+        // Update based on whether this node is a left or right child node
         if(id_parent_node_->id_left_child_node_ == this){
-            expected_prob_mass_ = id_parent_node_->expected_prob_mass_*beta/(alpha+beta);
+            update_expected_prob_mass(true);
         }else{
-            expected_prob_mass_ = id_parent_node_->expected_prob_mass_*alpha/(alpha+beta);
+            update_expected_prob_mass(false);
         }
-    }
-    if(!is_leaf_){
-        id_left_child_node_->update_expected_prob_mass(true);
-        id_right_child_node_->update_expected_prob_mass(false);
     }
 }
 
 void MondrianNode::update_expected_prob_mass(bool is_left){
     float alpha = id_parent_node_->decision_distr_param_alpha_;
     float beta = id_parent_node_->decision_distr_param_beta_;
-    
+    // Update based on whether this node is a left or right child node
     if(is_left){
         expected_prob_mass_ = id_parent_node_->expected_prob_mass_*beta/(alpha+beta);
     }else{
         expected_prob_mass_ = id_parent_node_->expected_prob_mass_*alpha/(alpha+beta);
     }
-    if(!is_leaf_){
+    if(is_leaf_){
+        // Update maximum expected probability mass in tree
+        if(expected_prob_mass_ > mondrian_tree_->get_max_prob_mass_node()->expected_prob_mass_){
+            mondrian_tree_->set_max_prob_mass_node(this);
+        }
+        return;
+    }else{
+        // Recurse on children
         id_left_child_node_->update_expected_prob_mass(true);
         id_right_child_node_->update_expected_prob_mass(false);
     }
@@ -1128,18 +1138,20 @@ MondrianTree::MondrianTree(const mondrian_settings& settings,
     settings_(&settings) {
     if (settings.debug)
         cout << "### Init Mondrian Tree " << endl;
-    /* Root note has no parent node -> set NULL pointer */
+    /* Root node has no parent node -> set NULL pointer */
     MondrianNode* null_parent_node = NULL;
     int depth = 0;
     /* Initialize root node */
     root_node_ = new MondrianNode( &num_classes_, feature_dim, 
             std::numeric_limits<float>::infinity(),
             *null_parent_node, settings, depth);
-    
+    /* Initialize pointer to node with maximum probability mass */
+    max_prob_mass_node_ = root_node_;
 }
 
 MondrianTree::~MondrianTree() {
     delete root_node_;  /* Delete root node */
+    delete max_prob_mass_node_;
 }
 
 /*
@@ -1226,6 +1238,13 @@ bool MondrianTree::check_if_new_class(Sample& sample) {
         new_class = true;
     }
     return new_class;
+}
+
+MondrianNode* MondrianTree::get_max_prob_mass_node(){
+    return max_prob_mass_node_;
+}
+void MondrianTree::set_max_prob_mass_node(MondrianNode* new_max_prob_mass_node){
+    
 }
 
 

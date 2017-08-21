@@ -196,6 +196,8 @@ inline float MondrianBlock::get_sum_dim_range() {
     return sum_dim_range_;
 }
 
+class MondrianTree; //Forward declaration of MondrianTree
+
 /*---------------------------------------------------------------------------*/
 /**
  * Defines a Mondrian node of a mondrian tree with one mondrian block
@@ -309,6 +311,7 @@ class MondrianNode {
                                                  at each node */
         float budget_;  /**< Represent remaining budget of current node */
         arma::fvec pred_prob_;
+        MondrianTree* mondrian_tree_;   /**< Pointer to the Mondrian tree */
         MondrianBlock* mondrian_block_;  /**< Pointer to mondrian block */
         /**
          * Pointer to child (left, right) and parent node
@@ -453,11 +456,14 @@ class MondrianTree {
          */
         int predict_class(Sample& sample, arma::fvec& pred_prob,
                 mondrian_confidence& m_conf);
+        MondrianNode* get_max_prob_mass_node();
+        void set_max_prob_mass_node(MondrianNode* new_max_prob_mass_node);
 
     private:
 
         float data_counter_;  /**< Count data points */
         MondrianNode* root_node_;  /**< Pointer to root node */
+        MondrianNode* max_prob_mass_node_;  /**< Pointer to node with maximum probability mass*/
         const mondrian_settings* settings_;  /**< Settings of Mondrian forest */
         /**
          * Update number of classes 
