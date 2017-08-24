@@ -47,7 +47,6 @@ void RandomGenerator::set_seed(unsigned int new_seed){
 }
 
 float RandomGenerator::rand_uniform_distribution() {
-    cout << uni_gen() << "\n"; //remove
     return uni_gen();
 }
 
@@ -85,6 +84,5 @@ float RandomGenerator::rand_exp_distribution(float lambda) {
     boost::exponential_distribution<float> exp_dist(lambda);
     boost::variate_generator<base_generator_type&,
         boost::exponential_distribution<float> > exp_gen(generator, exp_dist);
-    //cout << exp_gen() << "\n"; //remove
     return exp_gen();
 }

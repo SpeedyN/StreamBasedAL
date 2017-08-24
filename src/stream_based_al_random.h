@@ -17,7 +17,6 @@
 /*
  * Used to generate random numbers
  */
-#include <boost/random/beta_distribution.hpp>
 #include <boost/random/exponential_distribution.hpp> 
 #include <boost/random/uniform_real.hpp>
 #include <boost/random/variate_generator.hpp>
@@ -32,7 +31,9 @@ using namespace std;
 
 
 /*---------------------------------------------------------------------------*/
-typedef boost::mt11213b base_generator_type;
+/**< Type of random generator */
+typedef boost::mt11213b base_generator_type;  /* mt11213b (faster), mt19937 */
+
 
 /*---------------------------------------------------------------------------*/
 class RandomGenerator {
@@ -62,11 +63,22 @@ class RandomGenerator {
 
         static unsigned int init_seed();
         boost::uniform_real<float> uni_dist;
-        boost::exponential_distribution<float> exp_dist;
         boost::variate_generator<base_generator_type&,
             boost::uniform_real<float> > uni_gen;
 
 };
+
+inline int sample_multinomial_scores(arma::fvec& scores) {
+    arma::fvec scores_cumsum = arma::cumsum(scores);
+    float s = scores_cumsum(scores_cumsum.size()-1) *
+    arma::randu<arma::fvec>(1)[0];
+    /* -1 at the end, as it starts at 0 and not at 1 */
+    int k = int(arma::sum(s > scores_cumsum));
+    assert(k >= 0);
+    //TODO:
+    //assert(k <= int(scores.size())-1);
+    return k;
+}
 
 #endif /* STREAM_BASED_AL__RANDOM_H_ */
 /*---------------------------------------------------------------------------*/

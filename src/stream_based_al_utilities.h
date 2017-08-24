@@ -40,9 +40,6 @@
 
 using namespace std;
 
-/**< Type of random generator */
-typedef boost::mt11213b base_generator_type;  /* mt11213b (faster), mt19937 */
-
 /* 
  * Convert integer to string
  */
@@ -102,19 +99,6 @@ inline bool greater_zero(float A) {
     if (A > eps)
         return true;
     return false;
-}
-
-inline int sample_multinomial_scores(arma::fvec& scores) {
-    arma::fvec scores_cumsum = arma::cumsum(scores);
-    float s = scores_cumsum(scores_cumsum.size()-1) * 
-        arma::randu<arma::fvec>(1)[0];
-    //cout << s << "\n"; //remove
-    /* -1 at the end, as it starts at 0 and not at 1 */
-    int k = int(arma::sum(s > scores_cumsum));
-    assert(k >= 0);
-    //TODO:
-    //assert(k <= int(scores.size())-1);
-    return k;
 }
 
 /*
