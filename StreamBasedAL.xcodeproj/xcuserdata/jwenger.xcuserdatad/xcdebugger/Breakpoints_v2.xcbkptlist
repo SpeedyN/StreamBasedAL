@@ -42,13 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/stream_based_al_random.cpp"
-            timestampString = "525253750.523425"
+            timestampString = "525256142.881563"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "87"
-            endingLineNumber = "87"
-            landmarkName = "RandomGenerator::rand_exp_distribution(float lambda)"
-            landmarkType = "7">
+            startingLineNumber = "90"
+            endingLineNumber = "90">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -58,12 +56,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/stream_based_al_random.cpp"
-            timestampString = "525253750.523425"
+            timestampString = "525256142.881563"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "50"
-            endingLineNumber = "50"
-            landmarkName = "RandomGenerator::rand_uniform_distribution()"
+            startingLineNumber = "53"
+            endingLineNumber = "53"
+            landmarkName = "RandomGenerator::rand_uniform_distribution( float min_value, float max_value)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
