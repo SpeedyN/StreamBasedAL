@@ -11,8 +11,8 @@
  *
  */
 
-#ifndef STREAM_BASED_AL__RANDOM_H_
-#define STREAM_BASED_AL__RANDOM_H_
+#ifndef STREAM_BASED_AL_RANDOM_H_
+#define STREAM_BASED_AL_RANDOM_H_
 
 /*
  * Used to generate random numbers
@@ -30,6 +30,7 @@
 
 using namespace std;
 
+
 /*---------------------------------------------------------------------------*/
 typedef boost::mt11213b base_generator_type;
 
@@ -40,6 +41,8 @@ class RandomGenerator {
 
         RandomGenerator();
 
+        void set_seed(unsigned int);
+    
         float rand_uniform_distribution();
         /**
          * Generate value that is uniform distributed between min and max
@@ -53,12 +56,11 @@ class RandomGenerator {
         float rand_uniform_distribution(float min_value, float max_value,
                 bool& equal_values);
         float rand_exp_distribution(float lambda);
-        float rand_beta_distribution(float alpha, float beta);
 
     private:
-        static bool seed_flag_;
-        static base_generator_type generator;
+        base_generator_type generator; // base random number generator
 
+        static unsigned int init_seed();
         boost::uniform_real<float> uni_dist;
         boost::exponential_distribution<float> exp_dist;
         boost::variate_generator<base_generator_type&,
@@ -68,19 +70,3 @@ class RandomGenerator {
 
 #endif /* STREAM_BASED_AL__RANDOM_H_ */
 /*---------------------------------------------------------------------------*/
-
-inline double init_seed() {
-    ifstream devFile("/dev/urandom", ios::binary);
-    unsigned int outInt = 0;
-    char tempChar[sizeof(outInt)];
-
-    devFile.read(tempChar, sizeof(outInt));
-    outInt = atoi(tempChar);
-
-    devFile.close();
-
-    struct timeval TV;
-    gettimeofday(&TV, NULL);
-    double seed = TV.tv_sec * TV.tv_usec + getpid() + outInt;
-    return seed;
-}

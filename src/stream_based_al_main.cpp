@@ -23,7 +23,6 @@
 /* Mondrian libraries */
 #include "stream_based_al_forest.h"
 #include "stream_based_al_data.h"
-#include "stream_based_al_utilities.h"
 #include "stream_based_al_hyperparameters.h"
 #include "stream_based_al_experimenter.h"
 
@@ -99,6 +98,11 @@ int main(int argc, char *argv[]) {
      */
     /* Load hyperparameters of Mondrian forest */
     Hyperparameters hp(conf_file_name);
+    
+    /* Set the seed of the random number generator*/
+    if(hp.user_seed_config_ != 0){
+        rng.set_seed(hp.user_seed_config_);
+    }
 
     cout << endl;
     cout << "------------------" << endl;

@@ -122,9 +122,6 @@ std::ostream & operator<<(std::ostream &os, const MondrianBlock &mb) {
         << mb.debug_;
 }
 
-/*---------------------------------------------------------------------------*/
-/* Initialize random generator */
-RandomGenerator MondrianNode::random;
 
 /*
  * Construct tree node
@@ -731,7 +728,7 @@ void MondrianNode::sample_mondrian_block(const Sample& sample,
         split_cost = numeric_limits<float>::infinity();
         max_split_costs_ = budget_;
     } else {
-        split_cost = random.rand_exp_distribution(dim_range);
+        split_cost = rng.rand_exp_distribution(dim_range);
         max_split_costs_ = split_cost;
     }
     float new_budget = budget_ - split_cost;
@@ -768,7 +765,7 @@ void MondrianNode::sample_mondrian_block(const Sample& sample,
         std::pair<arma::fvec, arma::fvec> left_right_block;
         /* Special case if new samples lies not in current block
          * (not between min_block and max_block */
-        split_loc_ = random.rand_uniform_distribution(min_block_sample[split_dim_], 
+        split_loc_ = rng.rand_uniform_distribution(min_block_sample[split_dim_],
                 max_block_sample[split_dim_]);
         if (max_block[split_dim_] < sample.x[split_dim_] ||
                 equal(max_block[split_dim_],sample.x[split_dim_])) {
@@ -883,7 +880,7 @@ void MondrianNode::extend_mondrian_block(const Sample& sample) {
         split_cost = numeric_limits<float>::infinity();
     } else {
         /* Exponential distribution */
-        split_cost = random.rand_exp_distribution(expo_param);
+        split_cost = rng.rand_exp_distribution(expo_param);
     }
 
     /* Check if all labels are identical */
@@ -981,11 +978,11 @@ void MondrianNode::extend_mondrian_block(const Sample& sample) {
          */
         if (sample.x[split_dim] > mondrian_block_->get_max_block_dim()
                 [split_dim]) {
-            split_loc = random.rand_uniform_distribution(
+            split_loc = rng.rand_uniform_distribution(
                     mondrian_block_->get_min_block_dim()[split_dim],
                     sample.x[split_dim]);
         } else {
-            split_loc = random.rand_uniform_distribution(sample.x[split_dim], 
+            split_loc = rng.rand_uniform_distribution(sample.x[split_dim],
                     mondrian_block_->get_min_block_dim()[split_dim]);
         }
         float new_budget = budget_ - split_cost;
@@ -1412,13 +1409,16 @@ float MondrianForest::confidence_prediction(arma::fvec& pred_prob,
     }
     else if(settings_->confidence_measure == 1){
     /* Confidence: normalized entropy */
-        
+        float entropy = 0;
+        for (int i = 0; i < pred_prob.size(); i++){
+            if(pred_prob(i) > 0)
+                entropy += -pred_prob(i)*log(pred_prob(i))/log(pred_prob.size());
+        }
+        confidence = 1 - entropy;
     }
         
     /* Take normalized density account */
-    int feature_dim = int(settings_->discount_param / settings_->discount_factor);
-    float new_confidence = (1 - (5 * m_conf.distance/feature_dim)) * confidence;
-    if (new_confidence < 0)
-        new_confidence = 0;
+    float lambda = .2;
+    float new_confidence = (confidence + lambda*m_conf.normalized_density)/(1+lambda);
     return new_confidence;
 }

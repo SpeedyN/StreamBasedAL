@@ -29,8 +29,11 @@ class Hyperparameters {
         string train_labels_;  /**< Data with labels of training data */
         string test_data_;  /**< Data with testing data */
         string test_labels_;  /**< Data with labels of testing data */
+    
+        /* General */
+        unsigned int user_seed_config_; /**< Seed configuration for random number generation*/
 
-        /* Parameters how data should be load */
+        /* Parameters how data should be loaded */
         bool random_;  /**< Shuffle data randomly */
         bool iterative_;  /**< Jumps to define line in file and loads only
                             data of that line iteratively*/

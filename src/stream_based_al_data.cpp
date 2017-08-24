@@ -169,7 +169,6 @@ void DataSet::load_complete_dataset(const string& x_filename,
     num_classes_ = labels.size();
 
     if (random_) {
-        srand(init_seed());
         random_shuffle(samples_.begin(), samples_.end());
     }
 }
@@ -210,7 +209,6 @@ void DataSet::load_dataset_iteratively(const string& x_filename,
         for (long int i = 0; i < num_samples_; i++) {
             rand_vec_.push_back(i);
         }
-        srand(init_seed());
         random_shuffle(rand_vec_.begin(), rand_vec_.end());
     }
 }

@@ -60,7 +60,7 @@ inline string numberToString(T pNumber)
  */
 inline string new_name(const string str, int numb) {
 
-    int pos = str.find(".",8);
+    int pos = (int) str.find(".",8);
     int tmp_pos = pos;
     string new_str;
     string end = str.substr(pos, str.size());
@@ -105,15 +105,10 @@ inline bool greater_zero(float A) {
 }
 
 inline int sample_multinomial_scores(arma::fvec& scores) {
-    //arma::arma_rng::set_seed_random(); /* Set the seed to a random value */
-    static bool seed_arma_flag = false;
-    if (!seed_arma_flag) {
-        arma::arma_rng::set_seed_random(); /* Set the seed to a random value */
-        seed_arma_flag = true;
-    }
     arma::fvec scores_cumsum = arma::cumsum(scores);
     float s = scores_cumsum(scores_cumsum.size()-1) * 
         arma::randu<arma::fvec>(1)[0];
+    //cout << s << "\n"; //remove
     /* -1 at the end, as it starts at 0 and not at 1 */
     int k = int(arma::sum(s > scores_cumsum));
     assert(k >= 0);

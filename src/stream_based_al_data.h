@@ -73,9 +73,9 @@ class DataSet {
         /**
          * Load data points and labels from file
          *
-         * @param filename: file with data points and labels !! TODO:
-         * @param x_filename: file with data points only
-         * @param y_filename: file with labels only
+         * @param filename      : file with data points and labels !! TODO:
+         * @param x_filename    : file with data points only
+         * @param y_filename    : file with labels only
          */
         void load(const string& filename);
         void load(const string& x_filename, const string& y_filename,

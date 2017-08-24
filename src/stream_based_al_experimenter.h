@@ -19,7 +19,6 @@
 #include <boost/timer.hpp>
 /* Mondrian */
 #include "stream_based_al_forest.h"
-#include "stream_based_al_utilities.h"
 #include "stream_based_al_hyperparameters.h"
 #include "stream_based_al_data.h"
 

@@ -21,7 +21,7 @@
 #include <list>
 #include <algorithm>  /* Used for count elements in vector */
 #include <armadillo>  /* Matrix, vector library */
-#include "stream_based_al_utilities.h"
+#include "stream_based_al_random.h"
 #include "stream_based_al_data.h"
 #include <limits>
 
@@ -33,6 +33,10 @@
 #include <boost/serialization/utility.hpp>
 #include <boost/serialization/list.hpp>
 #include <boost/serialization/assume_abstract.hpp>
+
+/*---------------------------------------------------------------------------*/
+// Forward declaration of external random number generator
+extern RandomGenerator rng;
 
 /*---------------------------------------------------------------------------*/
 // TODO: serialization only works for Mondrian Block
@@ -332,7 +336,6 @@ class MondrianNode {
         float expected_prob_mass_; /**< Expected probability mass of the node */
         bool debug_;  /**< Set debug mode */
 
-        static RandomGenerator random;  /**< Random generator */
         /**
          * Checks if all labels in a node are identical
          * - go through vector count_labels_ and check 
