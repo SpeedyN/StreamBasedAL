@@ -492,7 +492,7 @@ bool MondrianNode::check_if_same_labels(const Sample& sample){
     if (count_val == (unsigned int)count_labels_.size()) {
         /* All elements are zero */
         same_labels = true;
-    } else if (count_val == ((unsigned int)count_labels_.size()-1)) {
+    } else if (count_val == (static_cast<unsigned int>(count_labels_.size()-1))) {
         same_labels = true; /* Is true if only one value is greater than 0 */
         /* 
         * Check if the only label of the current node has the same label
@@ -537,8 +537,8 @@ void MondrianNode::update_posterior_node_incremental(const Sample& sample) {
  * Initialize update posterior node
  */
 void MondrianNode::init_update_posterior_node_incremental(
-        MondrianNode& node_id, const Sample& sample) {
-    if (&node_id == NULL) { 
+        MondrianNode* node_id, const Sample& sample) {
+    if (node_id == NULL) {
         /* 
          * Initialize histogram of current node with zeros.
          * Size of histogram depends on current number of classes.
@@ -548,9 +548,9 @@ void MondrianNode::init_update_posterior_node_incremental(
         data_counter_ = 0;
     } else {
         /* Copy histogram of node "node_id" */
-        count_labels_ = node_id.count_labels_;
+        count_labels_ = node_id->count_labels_;
         /* Update data counter */
-        data_counter_ = node_id.data_counter_;
+        data_counter_ = node_id->data_counter_;
     }
     update_posterior_node_incremental(sample);
 }
@@ -559,8 +559,8 @@ void MondrianNode::init_update_posterior_node_incremental(
  * Initialize update posterior node (copy histogram of parent node)
  */
 void MondrianNode::init_update_posterior_node_incremental(
-        MondrianNode& node_id) {
-    if (&node_id == NULL) {
+        MondrianNode* node_id) {
+    if (node_id == NULL) {
         /* 
          * Initialize histogram of current node with zeros.
          * Size of histogram depends on current number of classes.
@@ -569,8 +569,8 @@ void MondrianNode::init_update_posterior_node_incremental(
                 arma::fill::zeros);
         data_counter_ = 0;
     } else {
-        count_labels_ = node_id.count_labels_;
-        data_counter_ = node_id.data_counter_;
+        count_labels_ = node_id->count_labels_;
+        data_counter_ = node_id->data_counter_;
     }
 }
 
@@ -817,12 +817,12 @@ void MondrianNode::sample_mondrian_block(const Sample& sample,
         if (sample.x[split_dim_] > split_loc_) {
             if (create_new_leaf) {
                 MondrianNode* tmp_node = NULL;
-                id_left_child_node_->init_update_posterior_node_incremental(*this);
+                id_left_child_node_->init_update_posterior_node_incremental(this);
                 id_right_child_node_->init_update_posterior_node_incremental(
-                        *tmp_node);
+                        tmp_node);
             } else {
-                id_left_child_node_->init_update_posterior_node_incremental(*this);
-                id_right_child_node_->init_update_posterior_node_incremental(*this);
+                id_left_child_node_->init_update_posterior_node_incremental(this);
+                id_right_child_node_->init_update_posterior_node_incremental(this);
             }
             /* Update new child node and check if node is "paused */
             id_right_child_node_->sample_mondrian_block(sample, true);
@@ -830,12 +830,12 @@ void MondrianNode::sample_mondrian_block(const Sample& sample,
         } else {
             if (create_new_leaf) {
                 MondrianNode* tmp_node = NULL;
-                id_right_child_node_->init_update_posterior_node_incremental(*this);
+                id_right_child_node_->init_update_posterior_node_incremental(this);
                 id_left_child_node_->init_update_posterior_node_incremental(
-                        *tmp_node);
+                        tmp_node);
             } else {
-                id_right_child_node_->init_update_posterior_node_incremental(*this);
-                id_left_child_node_->init_update_posterior_node_incremental(*this);
+                id_right_child_node_->init_update_posterior_node_incremental(this);
+                id_left_child_node_->init_update_posterior_node_incremental(this);
             }
             /* Update new child node and check if node is "paused */
             id_left_child_node_->sample_mondrian_block(sample, true);
@@ -949,7 +949,7 @@ void MondrianNode::extend_mondrian_block(const Sample& sample) {
                 min_block, max_block, *settings_, depth_);
         /* Set "new_parent_node" as new parent of current node */
         /* Pass histogram of current node to new parent node */
-        new_parent_node->init_update_posterior_node_incremental(*this, sample);
+        new_parent_node->init_update_posterior_node_incremental(this, sample);
         /* 
          * Sample split dimension \delta, choosing d with probability 
          * proportional to e^l_d + d^u_d
@@ -999,7 +999,7 @@ void MondrianNode::extend_mondrian_block(const Sample& sample) {
             new_child_block = min_block;
         }
         /* Grow Mondrian child node of the "outer Mondrian" */
-        int new_depth = depth_ +1;
+        int new_depth = depth_ + 1;
         MondrianNode* child_node = new MondrianNode(
                 *mondrian_tree_, num_classes_,
                 feature_dim, new_budget, *new_parent_node,
@@ -1023,7 +1023,7 @@ void MondrianNode::extend_mondrian_block(const Sample& sample) {
          * (initialize histogram with zeros -> pointer = NULL) 
          */
         MondrianNode* tmp_node = NULL;
-        child_node->init_update_posterior_node_incremental(*tmp_node, sample);
+        child_node->init_update_posterior_node_incremental(tmp_node, sample);
 
         child_node->sample_mondrian_block(sample);
 

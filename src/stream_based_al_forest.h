@@ -363,9 +363,9 @@ class MondrianNode {
         * @param node_id    : Id of Mondrian node to copy histogram from
         * @param sample     : Current data point
         */
-       void init_update_posterior_node_incremental(MondrianNode& node_id, 
+       void init_update_posterior_node_incremental(MondrianNode* node_id,
                const Sample& sample);
-       void init_update_posterior_node_incremental(MondrianNode& node_id);
+       void init_update_posterior_node_incremental(MondrianNode* node_id);
        /**
         * Add a training data point to current node
         */

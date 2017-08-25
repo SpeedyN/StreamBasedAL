@@ -36,7 +36,7 @@ unsigned int RandomGenerator::init_seed() {
     
     struct timeval TV;
     gettimeofday(&TV, NULL);
-    unsigned int seed = (unsigned int) TV.tv_sec * TV.tv_usec + getpid() + outInt;
+    unsigned int seed = static_cast<unsigned int>( TV.tv_sec * TV.tv_usec + getpid() + outInt);
     return seed;
 }
 
@@ -47,6 +47,9 @@ void RandomGenerator::set_seed(unsigned int new_seed){
 }
 
 float RandomGenerator::rand_uniform_distribution() {
+    boost::uniform_real<float> uni_dist;
+    boost::variate_generator<base_generator_type&,
+    boost::uniform_real<float> > uni_gen(generator, uni_dist);
     return uni_gen();
 }
 
@@ -86,3 +89,5 @@ float RandomGenerator::rand_exp_distribution(float lambda) {
         boost::exponential_distribution<float> > exp_gen(generator, exp_dist);
     return exp_gen();
 }
+
+

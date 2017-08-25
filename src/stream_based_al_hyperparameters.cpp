@@ -24,7 +24,7 @@ Hyperparameters::Hyperparameters(const string& conf_file) {
     config_file.readFile(conf_file.c_str());
     
     /* General */
-    user_seed_config_ = (unsigned int) config_file.lookup("General.seed");
+    user_seed_config_ = static_cast<unsigned int> (config_file.lookup("General.seed"));
 
     /* Load data files */
     train_data_ = (const char *) config_file.lookup("Data.train_data");

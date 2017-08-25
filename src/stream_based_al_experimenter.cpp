@@ -111,7 +111,7 @@ void Experimenter::train_active(MondrianForest* mf, DataSet& dataset,
       exit(EXIT_FAILURE);
   }
   /* Initialize progress bar */
-  unsigned int expected_count= dataset.num_samples_;
+  unsigned int expected_count = dataset.num_samples_;
   /* Display training progress */
   boost::progress_display show_progress( expected_count );
 

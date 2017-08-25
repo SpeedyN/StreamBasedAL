@@ -139,7 +139,7 @@ void DataSet::load_complete_dataset(const string& x_filename,
 
     /* Reading the header (first line of file)*/
     int tmp;
-    long int tmp_samples;
+    unsigned int tmp_samples;
     xfp >> tmp_samples;
     num_samples_ = tmp_samples;
     xfp >> feature_dim_;
@@ -166,7 +166,7 @@ void DataSet::load_complete_dataset(const string& x_filename,
     }
     xfp.close();
     yfp.close();
-    num_classes_ = labels.size();
+    num_classes_ = (int) labels.size();
 
     if (random_) {
         random_shuffle(samples_.begin(), samples_.end());
@@ -220,7 +220,7 @@ void DataSet::create_position_file(const string& file) {
     cout << endl;
     cout << "Trying to create file with all line positions ..." << endl;
 
-    int pos = file.find(".");
+    int pos = (int) file.find(".");
     string file_tmp = file.substr(0, pos);
     string x_filename = file_tmp + ".pos_data";
     string y_filename = file_tmp + ".pos_labels";
@@ -281,7 +281,7 @@ void DataSet::create_position_file(const string& file) {
  */
 void DataSet::open_position_file(const string& file) {
      
-    int pos = file.find(".");
+    int pos = (int) file.find(".");
     string file_tmp = file.substr(0, pos);
     string x_filename = file_tmp + ".pos_data";
     string y_filename = file_tmp + ".pos_labels";

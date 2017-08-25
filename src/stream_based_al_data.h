@@ -90,7 +90,7 @@ class DataSet {
         inline void reset_position() {sample_pos_ = 0;};
 
         /* Class properties */
-        long int num_samples_;  /**< Number of samples in current file */
+        unsigned int num_samples_;  /**< Number of samples in current file */
         int feature_dim_;  /**< Feature dimension */
         int num_classes_;  /**< Number of classes */
 

@@ -25,15 +25,7 @@
 #include <string.h>
 #include <list>
 
-/*
- * Used to generate random numbers
- */
-#include <boost/random/exponential_distribution.hpp> 
-#include <boost/random/uniform_real.hpp>
-#include <boost/random/variate_generator.hpp>
-#include <boost/random/mersenne_twister.hpp>  /**< Random generator mt19937 */
-#include <boost/generator_iterator.hpp>
-#include <boost/random/uniform_real.hpp>
+
 
 //#define eps 0.00001
 #define eps 0.0001
