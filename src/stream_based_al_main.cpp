@@ -1,13 +1,13 @@
 // -*- C++ -*-
 /*
- * This rogram is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General ublic License as bulished by
- * the Free Sofware Foundation; either version 3 or the License, or
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 or the License, or
  * (at your option) any later version.
  *
  * Copyright (C) 2016
  * Dep. Of Computer Science
- * Technical Universitiy of Munich (TUM)
+ * Technical University of Munich (TUM)
  *
  */
 #include <sys/time.h>
@@ -23,7 +23,6 @@
 /* Mondrian libraries */
 #include "stream_based_al_forest.h"
 #include "stream_based_al_data.h"
-#include "stream_based_al_utilities.h"
 #include "stream_based_al_hyperparameters.h"
 #include "stream_based_al_experimenter.h"
 
@@ -38,7 +37,7 @@ void help() {
     cout << "\t -c : \t\t path to the config file." << endl << endl;
     cout << "\t --train : \t Train the classifier." << endl;
     cout << "\t --test  : \t Test the classifier." << endl;
-    cout << "\t --conidence: \t Calculates a confidence value for each prediction \n \t\t\t (works but will not be saved in some file)" << endl;
+    cout << "\t --confidence: \t Calculates a confidence value for each prediction \n \t\t\t (works but will not be saved in some file)" << endl;
     cout << "\tExamples:" << endl;
     cout << "\t ./StreamBasedAL_MF -c conf/stream_based_al.conf --train --test" << endl;
 }
@@ -99,6 +98,11 @@ int main(int argc, char *argv[]) {
      */
     /* Load hyperparameters of Mondrian forest */
     Hyperparameters hp(conf_file_name);
+    
+    /* Set the seed of the random number generator*/
+    if(hp.user_seed_config_ != 0){
+        rng.set_seed(hp.user_seed_config_);
+    }
 
     cout << endl;
     cout << "------------------" << endl;
@@ -119,9 +123,11 @@ int main(int argc, char *argv[]) {
     mondrian_settings* settings = new mondrian_settings;
     settings->num_trees = hp.num_trees_; 
     settings->discount_factor = hp.discount_factor_;
+    settings->decision_prior_hyperparam = hp.decision_prior_hyperparam_;
     settings->discount_param = settings->discount_factor * float(feat_dim);
     settings->debug = hp.debug_;
     settings->max_samples_in_one_node = hp.max_samples_in_one_node_;
+    settings->confidence_measure = hp.confidence_measure_;
 
 /*---------------------------------------------------------------------------*/
     /* Initialize Mondrian forest */

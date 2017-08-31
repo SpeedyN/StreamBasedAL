@@ -1,18 +1,18 @@
 // -*- C++ -*-
 /*
- * This rogram is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General ublic License as bulished by
- * the Free Sofware Foundation; either version 3 or the License, or
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 or the License, or
  * (at your option) any later version.
  *
  * Copyright (C) 2016
  * Dep. Of Computer Science
- * Technical Universitiy of Munich (TUM)
+ * Technical University of Munich (TUM)
  *
  */
 
-#ifndef STREAM_BASED_AL__RANDOM_H_
-#define STREAM_BASED_AL__RANDOM_H_
+#ifndef STREAM_BASED_AL_RANDOM_H_
+#define STREAM_BASED_AL_RANDOM_H_
 
 /*
  * Used to generate random numbers
@@ -23,13 +23,17 @@
 #include <boost/random/mersenne_twister.hpp>  /**< Random generator mt19937 */
 #include <boost/generator_iterator.hpp>
 #include <boost/random/uniform_real.hpp>
+#include <sys/time.h>
 
 #include "stream_based_al_utilities.h"
 
 using namespace std;
 
+
 /*---------------------------------------------------------------------------*/
-typedef boost::mt11213b base_generator_type;
+/**< Type of random generator */
+typedef boost::mt11213b base_generator_type;  /* mt11213b (faster), mt19937 */
+
 
 /*---------------------------------------------------------------------------*/
 class RandomGenerator {
@@ -38,6 +42,8 @@ class RandomGenerator {
 
         RandomGenerator();
 
+        void set_seed(unsigned int);
+    
         float rand_uniform_distribution();
         /**
          * Generate value that is uniform distributed between min and max
@@ -53,31 +59,26 @@ class RandomGenerator {
         float rand_exp_distribution(float lambda);
 
     private:
-        static bool seed_flag_;
-        static base_generator_type generator;
+        base_generator_type generator; // base random number generator
 
+        static unsigned int init_seed();
         boost::uniform_real<float> uni_dist;
-        boost::exponential_distribution<float> exp_dist;
         boost::variate_generator<base_generator_type&,
             boost::uniform_real<float> > uni_gen;
 
 };
 
+inline int sample_multinomial_scores(arma::fvec& scores) {
+    arma::fvec scores_cumsum = arma::cumsum(scores);
+    float s = scores_cumsum(scores_cumsum.size()-1) *
+    arma::randu<arma::fvec>(1)[0];
+    /* -1 at the end, as it starts at 0 and not at 1 */
+    int k = int(arma::sum(s > scores_cumsum));
+    assert(k >= 0);
+    //TODO:
+    //assert(k <= int(scores.size())-1);
+    return k;
+}
+
 #endif /* STREAM_BASED_AL__RANDOM_H_ */
 /*---------------------------------------------------------------------------*/
-
-inline double init_seed() {
-    ifstream devFile("/dev/urandom", ios::binary);
-    unsigned int outInt = 0;
-    char tempChar[sizeof(outInt)];
-
-    devFile.read(tempChar, sizeof(outInt));
-    outInt = atoi(tempChar);
-
-    devFile.close();
-
-    struct timeval TV;
-    gettimeofday(&TV, NULL);
-    double seed = TV.tv_sec * TV.tv_usec + getpid() + outInt;
-    return seed;
-}

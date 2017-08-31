@@ -1,13 +1,13 @@
 // -*- C++ -*-
 /*
- * This rogram is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General ublic License as bulished by
- * the Free Sofware Foundation; either version 3 or the License, or
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 or the License, or
  * (at your option) any later version.
  *
  * Copyright (C) 2016
  * Dep. Of Computer Science
- * Technical Universitiy of Munich (TUM)
+ * Technical University of Munich (TUM)
  *
  */
 
@@ -25,23 +25,12 @@
 #include <string.h>
 #include <list>
 
-/*
- * Used to generate random numbers
- */
-#include <boost/random/exponential_distribution.hpp> 
-#include <boost/random/uniform_real.hpp>
-#include <boost/random/variate_generator.hpp>
-#include <boost/random/mersenne_twister.hpp>  /**< Random generator mt19937 */
-#include <boost/generator_iterator.hpp>
-#include <boost/random/uniform_real.hpp>
+
 
 //#define eps 0.00001
 #define eps 0.0001
 
 using namespace std;
-
-/**< Type of random generator */
-typedef boost::mt11213b base_generator_type;  /* mt11213b (faster), mt19937 */
 
 /* 
  * Convert integer to string
@@ -60,7 +49,7 @@ inline string numberToString(T pNumber)
  */
 inline string new_name(const string str, int numb) {
 
-    int pos = str.find(".",8);
+    int pos = (int) str.find(".",8);
     int tmp_pos = pos;
     string new_str;
     string end = str.substr(pos, str.size());
@@ -102,24 +91,6 @@ inline bool greater_zero(float A) {
     if (A > eps)
         return true;
     return false;
-}
-
-inline int sample_multinomial_scores(arma::fvec& scores) {
-    //arma::arma_rng::set_seed_random(); /* Set the seed to a random value */
-    static bool seed_arma_flag = false;
-    if (!seed_arma_flag) {
-        arma::arma_rng::set_seed_random(); /* Set the seed to a random value */
-        seed_arma_flag = true;
-    }
-    arma::fvec scores_cumsum = arma::cumsum(scores);
-    float s = scores_cumsum(scores_cumsum.size()-1) * 
-        arma::randu<arma::fvec>(1)[0];
-    /* -1 at the end, as it starts at 0 and not at 1 */
-    int k = int(arma::sum(s > scores_cumsum));
-    assert(k >= 0);
-    //TODO:
-    //assert(k <= int(scores.size())-1);
-    return k;
 }
 
 /*

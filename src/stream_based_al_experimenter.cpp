@@ -1,13 +1,13 @@
 // -*- C++ -*-
 /*
- * This rogram is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General ublic License as bulished by
- * the Free Sofware Foundation; either version 3 or the License, or
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 or the License, or
  * (at your option) any later version.
  *
  * Copyright (C) 2016
  * Dep. Of Computer Science
- * Technical Universitiy of Munich (TUM)
+ * Technical University of Munich (TUM)
  *
  */
 
@@ -21,7 +21,7 @@ Experimenter::Experimenter() :
   conf_value_(false) {
   pResult_ = new Result();
 }
-Experimenter::Experimenter(const bool confidence = false) :
+Experimenter::Experimenter(const bool confidence) :
   conf_value_(confidence) {
   pResult_ = new Result();
 }
@@ -95,7 +95,7 @@ void Experimenter::train_active(MondrianForest* mf, DataSet& dataset,
   /* Set number of training samples */
   unsigned int number_training_samples = 0;
   if (hp.number_of_samples_for_training_ == 0)
-    number_training_samples = dataset.num_samples_;
+    number_training_samples = (int) dataset.num_samples_;
   else
     number_training_samples = hp.number_of_samples_for_training_;
 
@@ -111,7 +111,7 @@ void Experimenter::train_active(MondrianForest* mf, DataSet& dataset,
       exit(EXIT_FAILURE);
   }
   /* Initialize progress bar */
-  unsigned int expected_count= dataset.num_samples_;
+  unsigned int expected_count = dataset.num_samples_;
   /* Display training progress */
   boost::progress_display show_progress( expected_count );
 
@@ -228,7 +228,7 @@ double Experimenter::test(MondrianForest* mf, DataSet& dataset,
 
   /* Check if test file exists */
   if (dataset.num_samples_ < 1) {
-      cout << "[ERROR] - There does not exist a test dataset" << endl;
+      cout << "[ERROR] - There does not exist a test dataset." << endl;
       exit(EXIT_FAILURE);
   }
 
@@ -277,7 +277,7 @@ double Experimenter::test(MondrianForest* mf, DataSet& dataset,
           std::endl;
       }
     } else { 
-      /* Predicttion */
+      /* Prediction */
       pred_class = mf->predict_class(sample);
     }
 

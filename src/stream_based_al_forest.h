@@ -1,13 +1,13 @@
 // -*- C++ -*-
 /*
- * This rogram is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General ublic License as bulished by
- * the Free Sofware Foundation; either version 3 or the License, or
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 or the License, or
  * (at your option) any later version.
  *
  * Copyright (C) 2016
  * Dep. Of Computer Science
- * Technical Universitiy of Munich (TUM)
+ * Technical University of Munich (TUM)
  *
  */
 
@@ -21,7 +21,7 @@
 #include <list>
 #include <algorithm>  /* Used for count elements in vector */
 #include <armadillo>  /* Matrix, vector library */
-#include "stream_based_al_utilities.h"
+#include "stream_based_al_random.h"
 #include "stream_based_al_data.h"
 #include <limits>
 
@@ -33,6 +33,10 @@
 #include <boost/serialization/utility.hpp>
 #include <boost/serialization/list.hpp>
 #include <boost/serialization/assume_abstract.hpp>
+
+/*---------------------------------------------------------------------------*/
+// Forward declaration of external random number generator
+extern RandomGenerator rng;
 
 /*---------------------------------------------------------------------------*/
 // TODO: serialization only works for Mondrian Block
@@ -64,8 +68,10 @@ struct mondrian_settings {
     float init_budget;
     float discount_factor;
     float discount_param;
+    float decision_prior_hyperparam;
     bool debug;
     int max_samples_in_one_node;
+    int confidence_measure;
 };
 /*---------------------------------------------------------------------------*/
 /**
@@ -73,7 +79,7 @@ struct mondrian_settings {
  */
 struct mondrian_confidence {
     int number_of_points;
-    float density;
+    float normalized_density;
     float distance;
 };
 /*---------------------------------------------------------------------------*/
@@ -195,6 +201,8 @@ inline float MondrianBlock::get_sum_dim_range() {
     return sum_dim_range_;
 }
 
+class MondrianTree; //Forward declaration of MondrianTree
+
 /*---------------------------------------------------------------------------*/
 /**
  * Defines a Mondrian node of a mondrian tree with one mondrian block
@@ -218,9 +226,10 @@ class MondrianNode {
          * Construct tree node
          */
         MondrianNode() : settings_(NULL) {};
-        MondrianNode(int* num_classes, const int& feature_dim,
-                const float& budget, MondrianNode& parent_node,
-                const mondrian_settings& settings, int& depth);
+        MondrianNode(MondrianTree& mondrian_tree, int* num_classes,
+                const int& feature_dim, const float& budget,
+                MondrianNode& parent_node, const mondrian_settings& settings,
+                int& depth);
         /**
          * Construct tree node with given values of boundaries of
          * the Mondrian block
@@ -228,26 +237,28 @@ class MondrianNode {
          * @param min_block_dim : Lower boundary of Mondrian block
          * @param max_block_dim : Upper boundary of Mondrian block
          */
-        MondrianNode(int* num_classes, const int& feature_dim, 
-                const float& budget, MondrianNode& parent_node,
+        MondrianNode(MondrianTree& mondrian_tree, int* num_classes,
+                const int& feature_dim, const float& budget,
+                MondrianNode& parent_node,
                 arma::fvec& min_block_dim, arma::fvec& max_block_dim,
                 const mondrian_settings& settings, int& depth);
         /**
          * Construct tree node with given values of boundaries of
          * the Mondrian block and one existing child node
          *
-         * @param parent_node: Pointer to parent node
-         * @param left_child_node: Pointer to left child node
-         * @param right_child_node: Pointer to right child node
-         * @param min_block_dim: Lower boundary of Mondrian block
-         * @param max_block_dim: Upper boundary of Mondrian block
+         * @param parent_node       : Pointer to parent node
+         * @param left_child_node   : Pointer to left child node
+         * @param right_child_node  : Pointer to right child node
+         * @param min_block_dim     : Lower boundary of Mondrian block
+         * @param max_block_dim     : Upper boundary of Mondrian block
          */
-        MondrianNode(int* num_classes, const int& feature_dim,
-                const float& budget, MondrianNode& parent_node, 
+        MondrianNode(MondrianTree& mondrian_tree, int* num_classes,
+                const int& feature_dim, const float& budget,
+                MondrianNode& parent_node,
                 MondrianNode& left_child_node, MondrianNode& right_child_node,
                 arma::fvec& min_block_dim, arma::fvec& max_block_dim,
                 const mondrian_settings& settings, int& depth);
-        ~MondrianNode();       
+        ~MondrianNode();
         /**
          * Print information of current node
          */
@@ -282,6 +293,12 @@ class MondrianNode {
          *                       2. update count_labels_ (label histogram)
          */
         void update(const Sample& sample);
+        /**
+         * Update the expected probability mass of the node and subsequent
+         * children based on the parameters of the decision distribution.
+         */
+        void update_expected_prob_mass();
+        void update_expected_prob_mass(bool is_left);
 
     private:
         /**< Set functions ostream and serialization as friend */
@@ -291,7 +308,7 @@ class MondrianNode {
 
         int* num_classes_;  /**< Number of classes */
         float data_counter_;  /**< Count data points */
-        bool is_leaf_;  /**< Boolen variable to indicate if current node
+        bool is_leaf_;  /**< Boolean variable to indicate if current node
                           is a leaf node */
         int split_dim_; /**< Split dimension (feat_id_chosen) */
         float split_loc_; /**< Split location (split_chosen) */
@@ -302,6 +319,7 @@ class MondrianNode {
                                                  at each node */
         float budget_;  /**< Represent remaining budget of current node */
         arma::fvec pred_prob_;
+        MondrianTree* mondrian_tree_;   /**< Pointer to the Mondrian tree */
         MondrianBlock* mondrian_block_;  /**< Pointer to mondrian block */
         /**
          * Pointer to child (left, right) and parent node
@@ -311,9 +329,13 @@ class MondrianNode {
         MondrianNode* id_parent_node_; /**< Pointer to parent node */
         const mondrian_settings* settings_;  /**< Mondrian settings */
         int depth_;  /**< Current depth of node in the tree */
+        float decision_distr_param_alpha_; /**< Parameter alpha of the estimated
+                                                decision distribution of the node */
+        float decision_distr_param_beta_;  /**< Parameter beta of the estimated
+                                                decision distribution of the node */
+        float expected_prob_mass_; /**< Expected probability mass of the node */
         bool debug_;  /**< Set debug mode */
 
-        static RandomGenerator random;  /**< Random generator */
         /**
          * Checks if all labels in a node are identical
          * - go through vector count_labels_ and check 
@@ -341,9 +363,9 @@ class MondrianNode {
         * @param node_id    : Id of Mondrian node to copy histogram from
         * @param sample     : Current data point
         */
-       void init_update_posterior_node_incremental(MondrianNode& node_id, 
+       void init_update_posterior_node_incremental(MondrianNode* node_id,
                const Sample& sample);
-       void init_update_posterior_node_incremental(MondrianNode& node_id);
+       void init_update_posterior_node_incremental(MondrianNode* node_id);
        /**
         * Add a training data point to current node
         */
@@ -390,6 +412,18 @@ class MondrianNode {
          * Extend mondrian block to include new training data
          */
         void extend_mondrian_block(const Sample& sample);
+    
+        /**
+         * Compute the posterior of the decision distribution at the current
+         * node by incrementing the corresponding parameter.
+         */
+        void increment_decision_distr_params(bool left_split);
+    
+        /**
+         * Set the parameters of the decision distribution at the current node
+         * to the prior, i.e. based on block volume and split of parent
+         */
+        void set_decision_distr_params(arma::fvec& min_block, arma::fvec& max_block);
 };
 
 /*---------------------------------------------------------------------------*/
@@ -429,11 +463,17 @@ class MondrianTree {
          */
         int predict_class(Sample& sample, arma::fvec& pred_prob,
                 mondrian_confidence& m_conf);
+        MondrianNode* get_max_prob_mass_leaf();
+        /**
+         *  Set the pointer to the leaf with the maximum probability mass in the tree
+         */
+        void set_max_prob_mass_leaf(MondrianNode& new_max_prob_mass_leaf);
 
     private:
 
         float data_counter_;  /**< Count data points */
         MondrianNode* root_node_;  /**< Pointer to root node */
+        MondrianNode* max_prob_mass_leaf_;  /**< Pointer to leaf with maximum probability mass*/
         const mondrian_settings* settings_;  /**< Settings of Mondrian forest */
         /**
          * Update number of classes 
@@ -483,7 +523,7 @@ class MondrianForest {
     private:
         float data_counter_;  /**< Count incoming data points */
         vector<MondrianTree*> trees_;  /**< Save all Mondrian trees */
-        const mondrian_settings* settings_;  /**< Setting of Mondrian forest */
+        const mondrian_settings* settings_;  /**< Settings of a Mondrian forest */
         /*
          * Calculates probability of current sample
          * (returns probability of all classes)

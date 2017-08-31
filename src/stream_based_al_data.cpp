@@ -1,20 +1,20 @@
 // -*- C++ -*-
 /*
- * This rogram is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General ublic License as bulished by
- * the Free Sofware Foundation; either version 3 or the License, or
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 or the License, or
  * (at your option) any later version.
  *
  * Copyright (C) 2016
  * Dep. Of Computer Science
- * Technical Universitiy of Munich (TUM)
+ * Technical University of Munich (TUM)
  *
  */
 
 #include "stream_based_al_data.h"
 
 /*---------------------------------------------------------------------------*/
-/**
+/*
  * Result
  */
 Result::Result() :
@@ -139,7 +139,7 @@ void DataSet::load_complete_dataset(const string& x_filename,
 
     /* Reading the header (first line of file)*/
     int tmp;
-    long int tmp_samples;
+    unsigned int tmp_samples;
     xfp >> tmp_samples;
     num_samples_ = tmp_samples;
     xfp >> feature_dim_;
@@ -166,10 +166,9 @@ void DataSet::load_complete_dataset(const string& x_filename,
     }
     xfp.close();
     yfp.close();
-    num_classes_ = labels.size();
+    num_classes_ = (int) labels.size();
 
     if (random_) {
-        srand(init_seed());
         random_shuffle(samples_.begin(), samples_.end());
     }
 }
@@ -210,7 +209,6 @@ void DataSet::load_dataset_iteratively(const string& x_filename,
         for (long int i = 0; i < num_samples_; i++) {
             rand_vec_.push_back(i);
         }
-        srand(init_seed());
         random_shuffle(rand_vec_.begin(), rand_vec_.end());
     }
 }
@@ -222,7 +220,7 @@ void DataSet::create_position_file(const string& file) {
     cout << endl;
     cout << "Trying to create file with all line positions ..." << endl;
 
-    int pos = file.find(".");
+    int pos = (int) file.find(".");
     string file_tmp = file.substr(0, pos);
     string x_filename = file_tmp + ".pos_data";
     string y_filename = file_tmp + ".pos_labels";
@@ -283,7 +281,7 @@ void DataSet::create_position_file(const string& file) {
  */
 void DataSet::open_position_file(const string& file) {
      
-    int pos = file.find(".");
+    int pos = (int) file.find(".");
     string file_tmp = file.substr(0, pos);
     string x_filename = file_tmp + ".pos_data";
     string y_filename = file_tmp + ".pos_labels";

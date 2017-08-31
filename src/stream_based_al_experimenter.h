@@ -1,13 +1,13 @@
 // -*- C++ -*-
 /*
- * This rogram is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General ublic License as bulished by
- * the Free Sofware Foundation; either version 3 or the License, or
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 or the License, or
  * (at your option) any later version.
  *
  * Copyright (C) 2016
- * Chair for Computer Vision & Pattern Recognition
- * Technical Universitiy of Munich (TUM)
+ * Dep. Of Computer Science
+ * Technical University of Munich (TUM)
  *
  */
 
@@ -19,7 +19,6 @@
 #include <boost/timer.hpp>
 /* Mondrian */
 #include "stream_based_al_forest.h"
-#include "stream_based_al_utilities.h"
 #include "stream_based_al_hyperparameters.h"
 #include "stream_based_al_data.h"
 
@@ -34,7 +33,7 @@ class Experimenter {
      * Construct experimenter
      */
     Experimenter();
-    Experimenter(const bool confidence);
+    Experimenter(const bool confidence = false);
     //Experimenter(MondrianForest* mf, Dataset& dataset, Hyperparameters& hp);
     ~Experimenter();
 
@@ -44,7 +43,7 @@ class Experimenter {
     * Input parameter:
     *
     * @param mf        : A Mondrian forest
-    * @param Dataset   : Trainings dataset
+    * @param dataset   : Trainings dataset
     * @param hp        : Hyperparameters
     *
     */
@@ -52,11 +51,11 @@ class Experimenter {
 
     /**
     * Function trains a mondrian forest in an active learning setting
-    * 
+    *
     * Input parameter:
     *
     * @param mf        : A Mondrian forest
-    * @param Dataset   : Trainings dataset
+    * @param dataset   : Trainings dataset
     * @param hp        : Hyperparameters
     *
     */
@@ -68,7 +67,7 @@ class Experimenter {
      * Input parameter:
      *
      * @param mf        : A Mondrian forest
-     * @param Dataset   : Testing dataset
+     * @param dataset   : Testing dataset
      * @param hp        : Hyperparameters
      *
      * Output: accuracy

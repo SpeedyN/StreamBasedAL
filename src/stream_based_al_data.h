@@ -1,13 +1,13 @@
 // -*- C++ -*-
 /*
- * This rogram is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General ublic License as bulished by
- * the Free Sofware Foundation; either version 3 or the License, or
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 or the License, or
  * (at your option) any later version.
  *
  * Copyright (C) 2016
  * Dep. Of Computer Science
- * Technical Universitiy of Munich (TUM)
+ * Technical University of Munich (TUM)
  *
  */
 
@@ -50,7 +50,7 @@ class Result {
     double accuracy_;  /**< Accuracy value of testing data */
     long int samples_used_for_training_;  /**< Number of samples that are
                                             used for training */
-    vector<int> result_prediction_;  /**< Save all prediction of a
+    vector<int> result_prediction_;  /**< Save all predictions of a
                                        Mondrian forest */
     vector<int> result_correct_prediction_;  /**< Save all correct classified
                                                samples */
@@ -73,9 +73,9 @@ class DataSet {
         /**
          * Load data points and labels from file
          *
-         * @param filename: file with data points and labels !! TODO:
-         * @param x_filename: file with data points only
-         * @param y_filename: file with labels only
+         * @param filename      : file with data points and labels !! TODO:
+         * @param x_filename    : file with data points only
+         * @param y_filename    : file with labels only
          */
         void load(const string& filename);
         void load(const string& x_filename, const string& y_filename,
@@ -90,7 +90,7 @@ class DataSet {
         inline void reset_position() {sample_pos_ = 0;};
 
         /* Class properties */
-        long int num_samples_;  /**< Number of samples in current file */
+        unsigned int num_samples_;  /**< Number of samples in current file */
         int feature_dim_;  /**< Feature dimension */
         int num_classes_;  /**< Number of classes */
 
